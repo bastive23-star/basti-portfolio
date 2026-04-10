@@ -39,7 +39,8 @@ body {
   overflow-x: hidden;
 }
 
-* { cursor: none !important; }
+*                                    { cursor: none !important; }
+a, button, [role="button"], [tabindex] { cursor: pointer !important; }
 
 /* Very subtle grain */
 body::after {

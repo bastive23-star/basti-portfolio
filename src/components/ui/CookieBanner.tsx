@@ -53,14 +53,14 @@ export default function CookieBanner() {
             <button
               onClick={accept}
               data-cursor="OK"
-              style={{ flex: 1, minWidth: 120, padding: '0.7rem 1.2rem', background: 'var(--fg)', color: 'var(--bg)', border: 'none', borderRadius: 6, fontFamily: 'var(--ff-body)', fontWeight: 700, fontSize: '0.82rem', letterSpacing: '0.04em' }}
+              style={{ flex: 1, minWidth: 120, padding: '0.7rem 1.2rem', background: 'var(--fg)', color: 'var(--bg)', border: 'none', borderRadius: 6, fontFamily: 'var(--ff-body)', fontWeight: 700, fontSize: '0.82rem', letterSpacing: '0.04em', cursor: 'pointer' }}
             >
               Alle akzeptieren
             </button>
             <button
               onClick={decline}
               data-cursor="Nein"
-              style={{ flex: 1, minWidth: 120, padding: '0.7rem 1.2rem', background: 'transparent', color: 'var(--fg-mid)', border: '1px solid var(--border)', borderRadius: 6, fontFamily: 'var(--ff-body)', fontWeight: 500, fontSize: '0.82rem' }}
+              style={{ flex: 1, minWidth: 120, padding: '0.7rem 1.2rem', background: 'transparent', color: 'var(--fg-mid)', border: '1px solid var(--border)', borderRadius: 6, fontFamily: 'var(--ff-body)', fontWeight: 500, fontSize: '0.82rem', cursor: 'pointer' }}
             >
               Nur notwendige
             </button>
