@@ -69,7 +69,7 @@ function ParallaxPhotos() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: EASE, delay: 0.1 }}
         >
-          <Image src="/images/portrait-1.jpg" alt="Sebastian" fill style={{ objectFit: 'cover', objectPosition: 'top center' }} sizes="(max-width: 768px) 50vw, 25vw" priority />
+          <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/portrait-1.jpg`} alt="Sebastian" fill style={{ objectFit: 'cover', objectPosition: 'top center' }} sizes="(max-width: 768px) 50vw, 25vw" priority />
         </motion.div>
       </motion.div>
 
@@ -87,7 +87,7 @@ function ParallaxPhotos() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: EASE, delay: 0.25 }}
         >
-          <Image src="/images/portrait-2.jpg" alt="Sebastian lachend" fill style={{ objectFit: 'cover', objectPosition: 'top center' }} sizes="(max-width: 768px) 35vw, 18vw" />
+          <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/portrait-2.jpg`} alt="Sebastian lachend" fill style={{ objectFit: 'cover', objectPosition: 'top center' }} sizes="(max-width: 768px) 35vw, 18vw" />
         </motion.div>
 
         {/* Available badge */}
