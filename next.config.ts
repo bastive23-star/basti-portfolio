@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === 'production'
-const basePath = isProd ? '/basti-portfolio' : ''
+const basePath = process.env.GITHUB_ACTIONS ? '/basti-portfolio' : ''
 
 const nextConfig: NextConfig = {
   devIndicators: false,
