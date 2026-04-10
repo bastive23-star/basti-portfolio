@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { DM_Sans, DM_Mono } from 'next/font/google'
 import ClientShell from '@/components/ui/ClientShell'
+import PasswordGate from '@/components/ui/PasswordGate'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" className={`${dmSans.variable} ${dmMono.variable}`}>
       <body>
         <ClientShell />
-        {children}
+        <PasswordGate>{children}</PasswordGate>
       </body>
     </html>
   )
