@@ -56,8 +56,8 @@ function AnimatedField({
   const [textColor,        setTextColor]        = useState('var(--fg)')
   const [typedPlaceholder, setTypedPlaceholder] = useState('')
   const prevLenRef  = useRef(0)
-  const rafRef      = useRef<number>()
-  const typeTimerRef = useRef<ReturnType<typeof setInterval>>()
+  const rafRef      = useRef<number | undefined>(undefined)
+  const typeTimerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   const active     = focused || hovered || value.length > 0
   const hasContent = value.length > 0
