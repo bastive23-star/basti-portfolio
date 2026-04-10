@@ -1,8 +1,9 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import Image from 'next/image'
 import { EASE } from '@/lib/motion'
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
 // ── Two photos side by side with independent parallax ────────────────────────
 function ParallaxPhotos() {
@@ -69,7 +70,7 @@ function ParallaxPhotos() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: EASE, delay: 0.1 }}
         >
-          <Image src="/images/portrait-1.jpg" alt="Sebastian" fill style={{ objectFit: 'cover', objectPosition: 'top center' }} sizes="(max-width: 768px) 50vw, 25vw" priority />
+          <img src={`${BASE}/images/portrait-1.jpg`} alt="Sebastian" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
         </motion.div>
       </motion.div>
 
@@ -87,7 +88,7 @@ function ParallaxPhotos() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: EASE, delay: 0.25 }}
         >
-          <Image src="/images/portrait-2.jpg" alt="Sebastian lachend" fill style={{ objectFit: 'cover', objectPosition: 'top center' }} sizes="(max-width: 768px) 35vw, 18vw" />
+          <img src={`${BASE}/images/portrait-2.jpg`} alt="Sebastian lachend" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
         </motion.div>
 
         {/* Available badge */}
