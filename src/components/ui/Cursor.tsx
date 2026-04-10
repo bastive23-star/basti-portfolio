@@ -50,7 +50,7 @@ export default function Cursor() {
   const expanded = label !== ''
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, pointerEvents: 'none' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 999999, pointerEvents: 'none' }}>
       {/* Dot */}
       <div
         ref={dotRef}
