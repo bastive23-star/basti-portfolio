@@ -288,7 +288,7 @@ export default function Hero() {
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 1.8, ease: 'easeOut' }}
         >
-          <video ref={videoRef} src={`${typeof window !== 'undefined' ? ((window as any).__NEXT_DATA__?.basePath ?? '') : ''}/images/hero-bg.mp4`} muted playsInline preload="auto"
+          <video ref={videoRef} src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`} muted playsInline preload="auto"
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           <div style={{
             position: 'absolute', inset: 0,
