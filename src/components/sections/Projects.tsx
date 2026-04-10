@@ -1,0 +1,152 @@
+'use client'
+import { useRef, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { EASE } from '@/lib/motion'
+
+const projects = [
+  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.' },
+  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.' },
+  { num: '03', title: 'Social Campaign Placeholder', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.' },
+  { num: '04', title: 'AI Visual Placeholder', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.' },
+  { num: '05', title: 'Event Coverage Placeholder', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Bild & Film von einem großen Event.' },
+]
+
+export default function Projects() {
+  const [hovered, setHovered] = useState<number | null>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const containerRef = useRef<HTMLDivElement>(null)
+  const sectionRef   = useRef<HTMLElement>(null)
+
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
+  const headerY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
+  const listY   = useTransform(scrollYProgress, [0, 1], ['3%',   '-9%'])
+  const ghostY  = useTransform(scrollYProgress, [0, 1], ['-8%',  '20%'])
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (rect) setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }
+
+  return (
+    <section id="projects" ref={sectionRef} className="section-pad" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-muted)', overflow: 'hidden', position: 'relative' }}>
+      {/* Ghost background word */}
+      <motion.div
+        style={{ y: ghostY, position: 'absolute', top: '8%', left: '-3%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
+        aria-hidden
+      >
+        <span style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(9rem, 25vw, 24rem)', fontWeight: 800, color: 'var(--fg)', opacity: 0.03, letterSpacing: '-0.04em', whiteSpace: 'nowrap', lineHeight: 1, display: 'block' }}>
+          PROJEKTE
+        </span>
+      </motion.div>
+      <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+
+        <motion.div
+          style={{ y: headerY, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'clamp(3rem,6vh,5rem)', flexWrap: 'wrap', gap: '1rem' }}
+        >
+          <div>
+            <motion.p className="tag" style={{ marginBottom: '0.8rem' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>Ausgewählte Arbeiten</motion.p>
+            <div style={{ overflow: 'hidden', paddingBottom: '0.15em' }}>
+              <motion.h2
+                style={{ fontSize: 'clamp(2.6rem,5.5vw,5rem)' }}
+                initial={{ y: '100%', opacity: 0 }}
+                whileInView={{ y: '0%', opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                Schaut{' '}
+                <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>selbst.</em>
+              </motion.h2>
+            </div>
+          </div>
+          <motion.a href="#contact" data-cursor="→" className="tag link-underline" style={{ color: 'var(--fg-mid)', textDecoration: 'none' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+            Alle Projekte →
+          </motion.a>
+        </motion.div>
+
+        {/* List with floating preview */}
+        <motion.div ref={containerRef} onMouseMove={onMouseMove} style={{ position: 'relative', y: listY }}>
+
+          {/* Floating preview card */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              left: mousePos.x,
+              top: mousePos.y,
+              zIndex: 10,
+              pointerEvents: 'none',
+              transform: 'translate(-50%, -55%)',
+            }}
+            animate={{
+              opacity: hovered !== null ? 1 : 0,
+              scale: hovered !== null ? 1 : 0.8,
+              rotate: hovered !== null ? -2 : 0,
+            }}
+            transition={{ duration: 0.22, ease: EASE }}
+          >
+            <div style={{ width: 260, height: 170, borderRadius: 10, overflow: 'hidden', background: hovered !== null ? projects[hovered].color : '#1a1a1a', boxShadow: '0 24px 60px rgba(0,0,0,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem' }}>
+              <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                {hovered !== null ? projects[hovered].category : ''}
+              </span>
+              <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)', fontWeight: 300 }}>
+                {hovered !== null ? projects[hovered].desc : ''}
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Project rows */}
+          {projects.map(({ num, title, category, year }, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07, duration: 0.6 }}
+              onHoverStart={() => setHovered(i)}
+              onHoverEnd={() => setHovered(null)}
+              data-cursor="View"
+              style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: 'clamp(1.2rem,3vh,1.9rem) 0',
+                borderTop: '1px solid var(--border)',
+                transition: 'opacity 0.25s ease',
+                opacity: hovered !== null && hovered !== i ? 0.25 : 1,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem' }}>
+                <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{num}</span>
+                <motion.h3
+                  className="font-display"
+                  style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, color: 'var(--fg)' }}
+                  animate={{ x: hovered === i ? 8 : 0 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                >
+                  {title}
+                </motion.h3>
+              </div>
+
+              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <motion.span
+                  className="tag"
+                  style={{ display: 'none' }}
+                  animate={{ display: 'block', opacity: hovered === i ? 1 : 0 }}
+                >
+                  {category}
+                </motion.span>
+                <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{year}</span>
+                <motion.div
+                  animate={{ x: hovered === i ? 4 : 0, opacity: hovered === i ? 1 : 0.3 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 12L12 2M12 2H5M12 2v7" stroke="var(--fg)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </motion.div>
+              </div>
+            </motion.div>
+          ))}
+          <div className="divider" />
+        </motion.div>
+      </div>
+    </section>
+  )
+}

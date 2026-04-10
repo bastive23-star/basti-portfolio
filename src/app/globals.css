@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/* ── Design Tokens — Light & Refined ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:       #F7F5F2;
+  --bg-2:     #FFFFFF;
+  --bg-muted: #EFECE8;
+
+  --fg:       #111009;
+  --fg-mid:   rgba(17,16,9,0.62);
+  --fg-faint: rgba(17,16,9,0.32);
+
+  --border:   rgba(20,18,16,0.08);
+  --border-mid: rgba(20,18,16,0.14);
+
+  /* Mint green accent */
+  --accent:   #34C9A8;
+  --accent-bg: rgba(52,201,168,0.08);
+
+  --ff-display: var(--font-dm-sans);
+  --ff-body:    var(--font-dm-sans);
+  --ff-mono:    var(--font-dm-mono);
+  --ff-serif:   "Georgia", serif;
+
+  --color-online: #22c55e;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; cursor: none; }
+
+body {
+  font-family: var(--ff-body), sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+* { cursor: none !important; }
+
+/* Very subtle grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4 {
+  font-family: var(--ff-display), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+}
+
+/* h1 is pure display — tight is intentional */
+h1 { line-height: 0.92; }
+
+/* h2 needs breathing room for descenders (Georgia italic "g", "y", "j"…) */
+h2 { line-height: 1.05; }
+
+h3, h4 { line-height: 1.1; }
+
+/* ── Utilities ── */
+.font-display { font-family: var(--ff-display), sans-serif; }
+.font-mono    { font-family: var(--ff-mono), monospace; }
+
+/* ── Section ── */
+.section-pad {
+  padding: clamp(5rem, 12vh, 9rem) clamp(1.5rem, 5vw, 5rem);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Tag ── */
+.tag {
+  font-family: var(--ff-mono), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--border); }
+
+/* ── Link underline ── */
+.link-underline { position: relative; text-decoration: none; }
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0;
+  width: 0; height: 1px;
+  background: var(--fg);
+  transition: width 0.4s var(--ease-out-expo);
+}
+.link-underline:hover::after { width: 100%; }
+
+/* ── Lenis ── */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+/* ── Mobile responsive utilities ── */
+@media (max-width: 767px) {
+  .hidden.md\:flex  { display: none !important; }
+  .hidden.md\:block { display: none !important; }
+  .flex.md\:hidden  { display: flex !important; }
+
+  /* Disable cursor override on touch devices */
+  html, body, * { cursor: auto !important; }
+
+  /* Tighten section spacing */
+  .section-pad {
+    padding: clamp(3.5rem, 8vh, 5rem) clamp(1.2rem, 5vw, 2rem);
+  }
+
+  /* Stack grids */
+  .container {
+    padding: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (min-width: 768px) {
+  .hidden.md\:flex  { display: flex !important; }
+  .hidden.md\:block { display: block !important; }
+  .flex.md\:hidden  { display: none !important; }
+}
+
+/* ── Mobile video: static (no parallax transform) ── */
+@media (max-width: 767px) {
+  .hero-video { transform: none !important; top: 0 !important; }
 }
