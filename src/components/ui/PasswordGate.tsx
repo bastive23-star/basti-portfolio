@@ -6,17 +6,20 @@ import { EASE } from '@/lib/motion'
 const PASSWORD = 'Elli'
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
-  const [unlocked, setUnlocked] = useState(false)
-  const [ready,    setReady]    = useState(false)
-  const [value,    setValue]    = useState('')
-  const [focused,  setFocused]  = useState(false)
-  const [error,    setError]    = useState(false)
-  const [visible,  setVisible]  = useState(false)
+  const [unlocked,    setUnlocked]    = useState(false)
+  const [showContent, setShowContent] = useState(false)
+  const [ready,       setReady]       = useState(false)
+  const [value,       setValue]       = useState('')
+  const [focused,     setFocused]     = useState(false)
+  const [error,       setError]       = useState(false)
+  const [visible,     setVisible]     = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (sessionStorage.getItem('pw-auth') === '1') {
+      // Returning visitor in same session — skip gate and show content immediately
       setUnlocked(true)
+      setShowContent(true)
     }
     setReady(true)
     setTimeout(() => setVisible(true), 80)
@@ -27,6 +30,8 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
     if (value === PASSWORD) {
       sessionStorage.setItem('pw-auth', '1')
       setUnlocked(true)
+      // Wait for gate exit animation (0.9s) to finish before mounting children
+      setTimeout(() => setShowContent(true), 950)
     } else {
       setError(true)
       setValue('')
@@ -38,8 +43,8 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
 
   return (
     <>
-      {/* Site renders behind the gate */}
-      {unlocked && children}
+      {/* Children mount only after gate has fully faded out */}
+      {showContent && children}
 
       <AnimatePresence>
         {!unlocked && (
