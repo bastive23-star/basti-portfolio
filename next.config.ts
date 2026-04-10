@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+// basePath is set via .env.production (NEXT_PUBLIC_BASE_PATH=/basti-portfolio)
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
 const nextConfig: NextConfig = {
@@ -8,9 +9,6 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
   basePath,
   assetPrefix: basePath,
-  env: {
-    NEXT_PUBLIC_BASE_PATH: basePath,
-  },
 };
 
 export default nextConfig;
