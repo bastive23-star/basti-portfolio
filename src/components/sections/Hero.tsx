@@ -145,7 +145,7 @@ function Intro({ onDone, onContentStart }: { onDone: () => void; onContentStart:
               display: 'block',
               fontFamily: '"Georgia", serif', fontStyle: 'italic', fontWeight: 400,
               fontSize: 'clamp(2.4rem, 7vw, 6rem)',
-              color: 'var(--fg-mid)', letterSpacing: '-0.01em', lineHeight: 1,
+              color: 'var(--fg)', letterSpacing: '-0.01em', lineHeight: 1,
             }}>
               Nice to meet you.
             </span>
