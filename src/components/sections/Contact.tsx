@@ -238,8 +238,8 @@ export default function Contact() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               {[
-                { label: 'Mail', href: 'mailto:hallo@example.com', text: 'hallo@example.com', cursor: 'Mail' },
-                { label: 'LinkedIn', href: 'https://linkedin.com', text: 'linkedin.com/in/sebastian', cursor: '→' },
+                { label: 'Mail', href: 'mailto:sebastian.vitzthum@vizz.de', text: 'sebastian.vitzthum@vizz.de', cursor: 'Mail' },
+                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/sebastian-vitzthum-101154180/', text: 'linkedin.com/in/sebastian-vitzthum', cursor: '→' },
               ].map(({ label, href, text, cursor }) => (
                 <motion.div
                   key={label}

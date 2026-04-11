@@ -21,7 +21,7 @@ export default function Impressum() {
         </section>
         <section>
           <h2 style={{ fontSize: '0.75rem', fontFamily: 'var(--ff-mono)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-faint)', marginBottom: '0.8rem', fontWeight: 400 }}>Kontakt</h2>
-          <p>E-Mail: hallo@sebastianvitzthum.de</p>
+          <p>E-Mail: sebastian.vitzthum@vizz.de</p>
         </section>
         <section>
           <h2 style={{ fontSize: '0.75rem', fontFamily: 'var(--ff-mono)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-faint)', marginBottom: '0.8rem', fontWeight: 400 }}>Haftung für Inhalte</h2>
