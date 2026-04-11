@@ -366,25 +366,41 @@ export default function Nav() {
             style={{ display: 'flex', gap: 'clamp(1.2rem, 2.5vw, 2.5rem)', listStyle: 'none', padding: 0, margin: 0 }}
             onMouseLeave={() => setHovered(null)}
           >
-            {links.map(({ label, href }) => (
+            {links.map(({ label, href, num }) => (
               <li key={label} style={{ position: 'relative' }}>
-                <a
+                <motion.a
                   href={href}
                   style={{
                     fontFamily: 'var(--ff-body)', fontSize: '0.8rem', fontWeight: 400,
-                    color: hovered && hovered !== label ? 'var(--fg-faint)' : 'var(--fg-mid)',
+                    color: hovered && hovered !== label ? 'var(--fg-faint)' : hovered === label ? 'var(--fg)' : 'var(--fg-mid)',
                     letterSpacing: '0.02em', textDecoration: 'none', display: 'block',
-                    padding: '0.2rem 0', transition: 'color 0.25s ease',
+                    padding: '0.2rem 0', transition: 'color 0.25s ease', position: 'relative',
                   }}
+                  animate={{ y: hovered === label ? -2 : 0 }}
+                  transition={{ duration: 0.25, ease: EASE }}
                   onMouseEnter={() => setHovered(label)}
                 >
+                  {/* Number that fades in above on hover */}
+                  <motion.span
+                    style={{
+                      position: 'absolute', top: -13, left: 0,
+                      fontFamily: 'var(--ff-mono)', fontSize: '0.42rem',
+                      letterSpacing: '0.18em', color: 'var(--accent)',
+                      pointerEvents: 'none',
+                    }}
+                    animate={{ opacity: hovered === label ? 1 : 0, y: hovered === label ? 0 : 4 }}
+                    transition={{ duration: 0.22, ease: EASE }}
+                  >
+                    {num}
+                  </motion.span>
                   {label}
+                  {/* Accent underline */}
                   <motion.span
                     style={{ position: 'absolute', bottom: -2, left: 0, height: 1, background: 'var(--accent)', display: 'block' }}
                     animate={{ width: hovered === label ? '100%' : '0%' }}
                     transition={{ duration: 0.3, ease: EASE }}
                   />
-                </a>
+                </motion.a>
               </li>
             ))}
           </ul>
