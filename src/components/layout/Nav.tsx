@@ -87,7 +87,7 @@ function FloatingCTA({ visible }: { visible: boolean }) {
     if (hovered) {
       shapeCtrl.stop()
       shapeCtrl.start({
-        width: 168, height: 46, borderRadius: '8px',
+        width: 90, height: 90, borderRadius: '50%',
         boxShadow: '0 8px 28px rgba(52,201,168,0.32)',
         transition: { duration: 0.55, ease: EASE },
       })
@@ -167,14 +167,15 @@ function FloatingCTA({ visible }: { visible: boolean }) {
           >
             <motion.span
               style={{
-                fontFamily: 'var(--ff-mono)', fontSize: '0.68rem', fontWeight: 500,
-                letterSpacing: '0.14em', textTransform: 'uppercase',
+                fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', fontWeight: 500,
+                letterSpacing: '0.12em', textTransform: 'uppercase',
                 whiteSpace: 'nowrap', color: 'var(--bg)',
+                textAlign: 'center', lineHeight: 1.4, padding: '0 0.5rem',
               }}
               animate={{ opacity: hovered ? 1 : 0 }}
               transition={{ duration: 0.22, delay: hovered ? 0.2 : 0 }}
             >
-              Slide in my DMs
+              Slide in<br />my DMs
             </motion.span>
           </motion.a>
         </div>
