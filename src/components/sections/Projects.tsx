@@ -4,8 +4,8 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePres
 import { EASE } from '@/lib/motion'
 
 const projects = [
-  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '' },
-  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '' },
+  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '/images/projects/projekt-1.webm' },
+  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '/images/projects/projekt-2.webm' },
   { num: '03', title: 'Social Campaign Placeholder', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.', video: '' },
   { num: '04', title: 'AI Visual Placeholder', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '' },
   { num: '05', title: 'Event Coverage Placeholder', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Bild & Film von einem großen Event.', video: '' },
