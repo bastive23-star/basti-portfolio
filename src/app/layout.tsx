@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description: 'Content Generalist aus München. Video, Film, Animation, Foto, KI, Social Media — alles aus einer Hand. Ich suche eine Festanstellung.',
   themeColor: '#F7F5F2',
   colorScheme: 'light',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
