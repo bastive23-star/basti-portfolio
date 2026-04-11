@@ -17,11 +17,11 @@ export default function Impressum() {
       <div style={{ fontFamily: 'var(--ff-body)', fontSize: '0.92rem', color: 'var(--fg-mid)', lineHeight: 1.85, display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         <section>
           <h2 style={{ fontSize: '0.75rem', fontFamily: 'var(--ff-mono)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-faint)', marginBottom: '0.8rem', fontWeight: 400 }}>Angaben gemäß § 5 TMG</h2>
-          <p>Vorname Nachname<br />Straße Hausnummer<br />PLZ Stadt<br />Deutschland</p>
+          <p>Sebastian Vitzthum<br />Demleitnerstraße 11<br />81371 München<br />Deutschland</p>
         </section>
         <section>
           <h2 style={{ fontSize: '0.75rem', fontFamily: 'var(--ff-mono)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-faint)', marginBottom: '0.8rem', fontWeight: 400 }}>Kontakt</h2>
-          <p>E-Mail: hallo@example.com</p>
+          <p>E-Mail: hallo@sebastianvitzthum.de</p>
         </section>
         <section>
           <h2 style={{ fontSize: '0.75rem', fontFamily: 'var(--ff-mono)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-faint)', marginBottom: '0.8rem', fontWeight: 400 }}>Haftung für Inhalte</h2>
