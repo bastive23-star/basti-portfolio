@@ -21,6 +21,7 @@ export default function Projects() {
   const headerY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
   const listY   = useTransform(scrollYProgress, [0, 1], ['3%',   '-9%'])
   const ghostY  = useTransform(scrollYProgress, [0, 1], ['-8%',  '20%'])
+  const ghostX  = useTransform(scrollYProgress, [0, 1], ['-6%',  '4%'])
 
   const onMouseMove = (e: React.MouseEvent) => {
     const rect = containerRef.current?.getBoundingClientRect()
@@ -31,7 +32,7 @@ export default function Projects() {
     <section id="projects" ref={sectionRef} className="section-pad" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-muted)', overflow: 'hidden', position: 'relative' }}>
       {/* Ghost background word */}
       <motion.div
-        style={{ y: ghostY, position: 'absolute', top: '8%', left: '-3%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
+        style={{ y: ghostY, x: ghostX, position: 'absolute', top: '8%', left: '-3%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
         aria-hidden
       >
         <span style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(9rem, 25vw, 24rem)', fontWeight: 800, color: 'var(--fg)', opacity: 0.03, letterSpacing: '-0.04em', whiteSpace: 'nowrap', lineHeight: 1, display: 'block' }}>
