@@ -196,6 +196,7 @@ export default function Contact() {
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
   const titleY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
   const ghostY = useTransform(scrollYProgress, [0, 1], ['-6%',  '16%'])
+  const ghostX = useTransform(scrollYProgress, [0, 1], ['-8%',  '4%'])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -206,7 +207,7 @@ export default function Contact() {
     <section id="contact" ref={sectionRef} className="section-pad" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg)', overflow: 'hidden', position: 'relative' }}>
       {/* Ghost background word */}
       <motion.div
-        style={{ y: ghostY, position: 'absolute', top: '0%', right: '-5%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
+        style={{ y: ghostY, x: ghostX, position: 'absolute', top: '0%', right: '-5%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
         aria-hidden
       >
         <span style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(8rem, 22vw, 20rem)', fontWeight: 800, color: 'var(--fg)', opacity: 0.025, letterSpacing: '-0.04em', whiteSpace: 'nowrap', lineHeight: 1, display: 'block' }}>

@@ -150,12 +150,13 @@ export default function About() {
   const textY   = useTransform(scrollYProgress, [0, 1], ['14%',  '-14%'])
   const photosY = useTransform(scrollYProgress, [0, 1], ['4%',   '-20%'])
   const ghostY  = useTransform(scrollYProgress, [0, 1], ['-10%', '22%'])
+  const ghostX  = useTransform(scrollYProgress, [0, 1], ['-4%',  '6%'])
 
   return (
     <section id="about" ref={sectionRef} style={{ borderTop: '1px solid var(--border)', background: 'var(--bg)', overflow: 'hidden', position: 'relative' }}>
       {/* Ghost background word */}
       <motion.div
-        style={{ y: ghostY, position: 'absolute', top: '10%', left: '-2%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
+        style={{ y: ghostY, x: ghostX, position: 'absolute', top: '10%', left: '-2%', pointerEvents: 'none', zIndex: 0, userSelect: 'none' }}
         aria-hidden
       >
         <span style={{ fontFamily: 'var(--ff-display)', fontSize: 'clamp(10rem, 28vw, 26rem)', fontWeight: 800, color: 'var(--fg)', opacity: 0.025, letterSpacing: '-0.04em', whiteSpace: 'nowrap', lineHeight: 1, display: 'block' }}>
