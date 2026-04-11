@@ -2,6 +2,7 @@
 
 /* ── Design Tokens — Light & Refined ── */
 :root {
+  color-scheme: light; /* prevent iOS/Android dark mode from darkening form elements */
   --bg:       #F7F5F2;
   --bg-2:     #FFFFFF;
   --bg-muted: #EFECE8;
@@ -138,7 +139,7 @@ html.lenis, html.lenis body { height: auto; }
   .flex.md\:hidden  { display: none !important; }
 }
 
-/* ── Mobile video: static (no parallax transform) ── */
+/* ── Mobile: hide video entirely (prevents scroll-scrub jank) ── */
 @media (max-width: 767px) {
-  .hero-video { transform: none !important; top: 0 !important; }
+  .hero-video { display: none !important; }
 }

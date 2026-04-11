@@ -21,6 +21,8 @@ const dmMono = DM_Mono({
 export const metadata: Metadata = {
   title: 'Basti — Content Generalist',
   description: 'Content Generalist aus München. Video, Film, Animation, Foto, KI, Social Media — alles aus einer Hand. Ich suche eine Festanstellung.',
+  themeColor: '#F7F5F2',
+  colorScheme: 'light',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

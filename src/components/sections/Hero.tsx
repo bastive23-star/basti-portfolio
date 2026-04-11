@@ -203,9 +203,12 @@ export default function Hero() {
   // (show intro) and flip in an effect to avoid SSR/hydration mismatch.
   const [introVisible,   setIntroVisible]   = useState(true)
   const [contentVisible, setContentVisible] = useState(false)
+  const [isMobile,       setIsMobile]       = useState(false)
 
   useEffect(() => {
-    if (sessionStorage.getItem('intro-seen')) {
+    const mobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0
+    setIsMobile(mobile)
+    if (sessionStorage.getItem('intro-seen') || mobile) {
       setIntroVisible(false)
       setContentVisible(true)
     }
@@ -237,6 +240,7 @@ export default function Hero() {
   const subYp = useTransform(sY, v => v * -5)
 
   useEffect(() => {
+    if (isMobile) return
     const onMove = (e: MouseEvent) => {
       const nx = e.clientX / window.innerWidth  - 0.5
       const ny = e.clientY / window.innerHeight - 0.5
@@ -248,9 +252,10 @@ export default function Hero() {
     }
     window.addEventListener('mousemove', onMove)
     return () => window.removeEventListener('mousemove', onMove)
-  }, [rawX, rawY])
+  }, [rawX, rawY, isMobile])
 
   useEffect(() => {
+    if (isMobile) return
     const video = videoRef.current
     if (!video) return
     return scrollYProgress.on('change', v => {
@@ -258,7 +263,7 @@ export default function Hero() {
         video.currentTime = v * video.duration
       }
     })
-  }, [scrollYProgress])
+  }, [scrollYProgress, isMobile])
 
   // Smooth stagger — content starts while intro overlay is still fading out
   const d = (n: number) => ({ delay: n, duration: 1.4, ease: EASE })

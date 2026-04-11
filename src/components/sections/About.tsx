@@ -16,6 +16,9 @@ function ParallaxPhotos() {
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
+    // No mouse on touch devices — skip the rAF loop entirely
+    if (navigator.maxTouchPoints > 0) return
+
     const onMove = (e: MouseEvent) => {
       const rect = containerRef.current?.getBoundingClientRect()
       if (!rect) return

@@ -8,6 +8,9 @@ export default function Cursor() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    // Touch-only devices don't need a custom cursor
+    if (navigator.maxTouchPoints > 0) return
+
     let mx = 0, my = 0
     let rx = 0, ry = 0
     let raf: number
