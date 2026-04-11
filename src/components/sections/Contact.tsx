@@ -227,7 +227,7 @@ export default function Contact() {
             <p className="tag" style={{ marginBottom: '1.5rem' }}>Kontakt</p>
             <h2 style={{ fontSize: 'clamp(2.6rem, 5.5vw, 5rem)', color: 'var(--fg)', marginBottom: '1.8rem' }}>
               Klingt das<br />
-              <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>nach dir?</em>
+              <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>interessant?</em>
             </h2>
             <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.92rem, 1.2vw, 1rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '0.9rem', maxWidth: '36ch' }}>
               Ich suche gerade eine Festanstellung in München. Content Generalist — Video, Foto, Grafik, Animation, Musik, KI. Alles selbst produziert.
