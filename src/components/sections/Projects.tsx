@@ -4,11 +4,11 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePres
 import { EASE } from '@/lib/motion'
 
 const projects = [
-  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.' },
-  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.' },
-  { num: '03', title: 'Social Campaign Placeholder', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.' },
-  { num: '04', title: 'AI Visual Placeholder', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.' },
-  { num: '05', title: 'Event Coverage Placeholder', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Bild & Film von einem großen Event.' },
+  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '' },
+  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '' },
+  { num: '03', title: 'Social Campaign Placeholder', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.', video: '' },
+  { num: '04', title: 'AI Visual Placeholder', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '' },
+  { num: '05', title: 'Event Coverage Placeholder', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Bild & Film von einem großen Event.', video: '' },
 ]
 
 export default function Projects() {
@@ -108,18 +108,36 @@ export default function Projects() {
                     animate={{ y: '0%',   opacity: 1 }}
                     exit={{    y:  '60%', opacity: 0 }}
                     transition={{ duration: 0.32, ease: EASE }}
-                    style={{
+                    style={{ position: 'absolute', inset: 0 }}
+                  >
+                    {/* WebM preview — fills card when available */}
+                    {hovered !== null && projects[hovered].video ? (
+                      <>
+                        <video
+                          src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${projects[hovered].video}`}
+                          autoPlay loop muted playsInline
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        />
+                        {/* Subtle overlay so text stays readable */}
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%)' }} />
+                      </>
+                    ) : null}
+
+                    {/* Text — always shown, sits on top of video */}
+                    <div style={{
                       position: 'absolute', inset: 0,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexDirection: 'column', gap: '0.5rem', padding: '1.2rem',
-                    }}
-                  >
-                    <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center' }}>
-                      {hovered !== null ? projects[hovered].category : ''}
-                    </span>
-                    <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.52)', fontWeight: 300, textAlign: 'center' }}>
-                      {hovered !== null ? projects[hovered].desc : ''}
-                    </span>
+                      opacity: hovered !== null && projects[hovered].video ? 0 : 1,
+                      transition: 'opacity 0.3s ease',
+                    }}>
+                      <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center' }}>
+                        {hovered !== null ? projects[hovered].category : ''}
+                      </span>
+                      <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.52)', fontWeight: 300, textAlign: 'center' }}>
+                        {hovered !== null ? projects[hovered].desc : ''}
+                      </span>
+                    </div>
                   </motion.div>
                 </AnimatePresence>
               </motion.div>
