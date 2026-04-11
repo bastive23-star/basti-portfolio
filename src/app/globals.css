@@ -139,7 +139,7 @@ html.lenis, html.lenis body { height: auto; }
   .flex.md\:hidden  { display: none !important; }
 }
 
-/* ── Mobile: hide video entirely (prevents scroll-scrub jank) ── */
+/* ── Mobile: reset parallax transforms on video (no scroll-scrub, just plays) ── */
 @media (max-width: 767px) {
-  .hero-video { display: none !important; }
+  .hero-video { transform: none !important; }
 }

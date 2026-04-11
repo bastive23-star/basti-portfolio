@@ -293,8 +293,13 @@ export default function Hero() {
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 1.8, ease: 'easeOut' }}
         >
-          <video ref={videoRef} src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`} muted playsInline preload="auto"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          <video
+            ref={videoRef}
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`}
+            muted playsInline preload="auto"
+            autoPlay={isMobile} loop={isMobile}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
           <div style={{
             position: 'absolute', inset: 0,
             background: `linear-gradient(to bottom, rgba(247,245,242,0.92) 0%, rgba(247,245,242,0.58) 35%, rgba(247,245,242,0.58) 65%, rgba(247,245,242,0.92) 100%), linear-gradient(to right, rgba(247,245,242,0.7) 0%, transparent 30%, transparent 70%, rgba(247,245,242,0.7) 100%)`,
