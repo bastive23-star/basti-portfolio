@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 import { EASE } from '@/lib/motion'
 
 const projects = [
@@ -13,7 +13,6 @@ const projects = [
 
 export default function Projects() {
   const [hovered, setHovered] = useState<number | null>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
   const sectionRef   = useRef<HTMLElement>(null)
 
@@ -23,9 +22,18 @@ export default function Projects() {
   const ghostY  = useTransform(scrollYProgress, [0, 1], ['-8%',  '20%'])
   const ghostX  = useTransform(scrollYProgress, [0, 1], ['-6%',  '4%'])
 
+  // Magnetic lag — weak spring so card pulls behind the cursor
+  const rawX = useMotionValue(0)
+  const rawY = useMotionValue(0)
+  const cardX = useSpring(rawX, { stiffness: 90, damping: 18, mass: 1.2 })
+  const cardY = useSpring(rawY, { stiffness: 90, damping: 18, mass: 1.2 })
+
   const onMouseMove = (e: React.MouseEvent) => {
     const rect = containerRef.current?.getBoundingClientRect()
-    if (rect) setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    if (rect) {
+      rawX.set(e.clientX - rect.left)
+      rawY.set(e.clientY - rect.top)
+    }
   }
 
   return (
@@ -67,31 +75,49 @@ export default function Projects() {
         {/* List with floating preview */}
         <motion.div ref={containerRef} onMouseMove={onMouseMove} style={{ position: 'relative', y: listY }}>
 
-          {/* Floating preview card */}
+          {/* Floating preview card — spring-lagged magnetic follow */}
           <motion.div
             style={{
-              position: 'absolute',
-              left: mousePos.x,
-              top: mousePos.y,
-              zIndex: 10,
-              pointerEvents: 'none',
-              transform: 'translate(-50%, -55%)',
+              position: 'absolute', left: 0, top: 0,
+              x: cardX, y: cardY,
+              zIndex: 10, pointerEvents: 'none',
             }}
-            animate={{
-              opacity: hovered !== null ? 1 : 0,
-              scale: hovered !== null ? 1 : 0.8,
-              rotate: hovered !== null ? -2 : 0,
-            }}
-            transition={{ duration: 0.22, ease: EASE }}
+            animate={{ opacity: hovered !== null ? 1 : 0, scale: hovered !== null ? 1 : 0.82 }}
+            transition={{ duration: 0.25, ease: EASE }}
           >
-            <div style={{ width: 260, height: 170, borderRadius: 10, overflow: 'hidden', background: hovered !== null ? projects[hovered].color : '#1a1a1a', boxShadow: '0 24px 60px rgba(0,0,0,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem' }}>
-              <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                {hovered !== null ? projects[hovered].category : ''}
-              </span>
-              <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)', fontWeight: 300 }}>
-                {hovered !== null ? projects[hovered].desc : ''}
-              </span>
-            </div>
+            {/* Centering wrapper + slight tilt */}
+            <motion.div
+              style={{ transform: 'translate(-50%, -58%)', perspective: 900 }}
+              animate={{ rotate: hovered !== null ? -2 : 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
+            >
+              {/* 3D flip when project changes */}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={hovered}
+                  initial={{ rotateY: -75, opacity: 0, scale: 0.95 }}
+                  animate={{ rotateY: 0,   opacity: 1, scale: 1    }}
+                  exit={{    rotateY:  75, opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.38, ease: EASE }}
+                  style={{
+                    width: 260, height: 170, borderRadius: 10,
+                    background: hovered !== null ? projects[hovered].color : '#1a1a1a',
+                    boxShadow: '0 28px 64px rgba(0,0,0,0.22)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexDirection: 'column', gap: '0.5rem',
+                    transformStyle: 'preserve-3d',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                    {hovered !== null ? projects[hovered].category : ''}
+                  </span>
+                  <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.52)', fontWeight: 300 }}>
+                    {hovered !== null ? projects[hovered].desc : ''}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
           </motion.div>
 
           {/* Project rows */}
