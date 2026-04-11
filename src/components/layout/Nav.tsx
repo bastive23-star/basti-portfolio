@@ -59,13 +59,23 @@ function FloatingCTA({ visible }: { visible: boolean }) {
   const wrapRef   = useRef<HTMLDivElement>(null)
   const shapeCtrl = useAnimation()
 
-  const BLOB_FRAMES = [
+  // Idle blob frames — subtle organic wabble
+  const BLOB_IDLE = [
     '50%',
     '55% 45% 52% 48%',
     '46% 54% 56% 44%',
     '52% 48% 44% 56%',
     '48% 52% 50% 50%',
     '50%',
+  ]
+  // Hover blob frames — more extreme wabble + pulsing size
+  const BLOB_HOVER = [
+    '50% 50% 50% 50% / 50% 50% 50% 50%',
+    '60% 40% 55% 45% / 45% 55% 45% 55%',
+    '40% 60% 45% 55% / 55% 45% 60% 40%',
+    '58% 42% 48% 52% / 42% 58% 52% 48%',
+    '44% 56% 60% 40% / 56% 44% 40% 60%',
+    '50% 50% 50% 50% / 50% 50% 50% 50%',
   ]
 
   const onMove = (e: React.MouseEvent) => {
@@ -86,19 +96,29 @@ function FloatingCTA({ visible }: { visible: boolean }) {
   useEffect(() => {
     if (hovered) {
       shapeCtrl.stop()
+      // Grow to large circle first, then start wabbling + pulsing
       shapeCtrl.start({
-        width: 90, height: 90, borderRadius: '50%',
-        boxShadow: '0 8px 28px rgba(52,201,168,0.32)',
-        transition: { duration: 0.55, ease: EASE },
+        width: 130, height: 130,
+        borderRadius: '50%',
+        boxShadow: '0 12px 40px rgba(52,201,168,0.4)',
+        transition: { duration: 0.5, ease: EASE },
+      }).then(() => {
+        shapeCtrl.start({
+          borderRadius: BLOB_HOVER,
+          width: [130, 138, 126, 134, 128, 130],
+          height: [130, 126, 136, 128, 134, 130],
+          transition: { repeat: Infinity, repeatType: 'loop', duration: 3, ease: 'easeInOut' },
+        })
       })
     } else {
+      shapeCtrl.stop()
       shapeCtrl.start({
         width: 50, height: 50, borderRadius: '50%',
         boxShadow: '0 0 0 0 rgba(52,201,168,0)',
         transition: { duration: 0.45, ease: EASE },
       }).then(() => {
         shapeCtrl.start({
-          borderRadius: BLOB_FRAMES,
+          borderRadius: BLOB_IDLE,
           transition: { repeat: Infinity, repeatType: 'loop', duration: 5, ease: 'easeInOut' },
         })
       })
@@ -167,13 +187,14 @@ function FloatingCTA({ visible }: { visible: boolean }) {
           >
             <motion.span
               style={{
-                fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', fontWeight: 500,
-                letterSpacing: '0.12em', textTransform: 'uppercase',
-                whiteSpace: 'nowrap', color: 'var(--bg)',
-                textAlign: 'center', lineHeight: 1.4, padding: '0 0.5rem',
+                fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 500,
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: '#111009',
+                textAlign: 'center', lineHeight: 1.5, padding: '0 0.8rem',
+                pointerEvents: 'none',
               }}
-              animate={{ opacity: hovered ? 1 : 0 }}
-              transition={{ duration: 0.22, delay: hovered ? 0.2 : 0 }}
+              animate={{ opacity: hovered ? 1 : 0, scale: hovered ? 1 : 0.85 }}
+              transition={{ duration: 0.25, delay: hovered ? 0.25 : 0 }}
             >
               Slide in<br />my DMs
             </motion.span>
