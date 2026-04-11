@@ -91,32 +91,38 @@ export default function Projects() {
               animate={{ rotate: hovered !== null ? -2 : 0 }}
               transition={{ duration: 0.5, ease: EASE }}
             >
-              {/* 3D flip when project changes */}
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={hovered}
-                  initial={{ rotateY: -75, opacity: 0, scale: 0.95 }}
-                  animate={{ rotateY: 0,   opacity: 1, scale: 1    }}
-                  exit={{    rotateY:  75, opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.38, ease: EASE }}
-                  style={{
-                    width: 260, height: 170, borderRadius: 10,
-                    background: hovered !== null ? projects[hovered].color : '#1a1a1a',
-                    boxShadow: '0 28px 64px rgba(0,0,0,0.22)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexDirection: 'column', gap: '0.5rem',
-                    transformStyle: 'preserve-3d',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                    {hovered !== null ? projects[hovered].category : ''}
-                  </span>
-                  <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.52)', fontWeight: 300 }}>
-                    {hovered !== null ? projects[hovered].desc : ''}
-                  </span>
-                </motion.div>
-              </AnimatePresence>
+              {/* Card shell — color transitions smoothly, content slides top→bottom */}
+              <motion.div
+                animate={{ background: hovered !== null ? projects[hovered].color : '#1a1a1a' }}
+                transition={{ duration: 0.35, ease: EASE }}
+                style={{
+                  width: 260, height: 170, borderRadius: 10,
+                  boxShadow: '0 28px 64px rgba(0,0,0,0.22)',
+                  overflow: 'hidden', position: 'relative',
+                }}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={hovered}
+                    initial={{ y: '-60%', opacity: 0 }}
+                    animate={{ y: '0%',   opacity: 1 }}
+                    exit={{    y:  '60%', opacity: 0 }}
+                    transition={{ duration: 0.32, ease: EASE }}
+                    style={{
+                      position: 'absolute', inset: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexDirection: 'column', gap: '0.5rem', padding: '1.2rem',
+                    }}
+                  >
+                    <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center' }}>
+                      {hovered !== null ? projects[hovered].category : ''}
+                    </span>
+                    <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.52)', fontWeight: 300, textAlign: 'center' }}>
+                      {hovered !== null ? projects[hovered].desc : ''}
+                    </span>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
             </motion.div>
           </motion.div>
 
