@@ -85,18 +85,26 @@ export default function Projects() {
             animate={{ opacity: hovered !== null ? 1 : 0, scale: hovered !== null ? 1 : 0.82 }}
             transition={{ duration: 0.25, ease: EASE }}
           >
-            {/* Centering wrapper + slight tilt */}
-            <motion.div
-              style={{ transform: 'translate(-50%, -58%)', perspective: 900 }}
-              animate={{ rotate: hovered !== null ? -2 : 0 }}
-              transition={{ duration: 0.5, ease: EASE }}
-            >
-              {/* Card shell — color transitions smoothly, content slides top→bottom */}
+            {/* Centering wrapper */}
+            <motion.div style={{ transform: 'translate(-50%, -58%)' }}>
+              {/* Card shell — color transitions smoothly, border-radius wabbles */}
               <motion.div
-                animate={{ background: hovered !== null ? projects[hovered].color : '#1a1a1a' }}
-                transition={{ duration: 0.35, ease: EASE }}
+                animate={{
+                  background: hovered !== null ? projects[hovered].color : '#1a1a1a',
+                  borderRadius: [
+                    '38% 62% 54% 46% / 48% 44% 56% 52%',
+                    '46% 54% 44% 56% / 56% 52% 48% 44%',
+                    '54% 46% 60% 40% / 44% 58% 42% 56%',
+                    '42% 58% 48% 52% / 52% 46% 54% 48%',
+                    '38% 62% 54% 46% / 48% 44% 56% 52%',
+                  ],
+                }}
+                transition={{
+                  background: { duration: 0.35, ease: EASE },
+                  borderRadius: { repeat: Infinity, duration: 7, ease: 'easeInOut' },
+                }}
                 style={{
-                  width: 260, height: 170, borderRadius: 10,
+                  width: 260, height: 220,
                   boxShadow: '0 28px 64px rgba(0,0,0,0.22)',
                   overflow: 'hidden', position: 'relative',
                 }}
