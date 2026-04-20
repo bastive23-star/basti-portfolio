@@ -1,7 +1,6 @@
 import Nav from '@/components/layout/Nav'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
-import ScrollSkew from '@/components/ui/ScrollSkew'
 import Hero from '@/components/sections/Hero'
 import About from '@/components/sections/About'
 import Services from '@/components/sections/Services'
@@ -15,12 +14,10 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <ScrollSkew>
-          <About />
-          <Services />
-          <Projects />
-          <Contact />
-        </ScrollSkew>
+        <About />
+        <Services />
+        <Projects />
+        <Contact />
       </main>
       <Footer />
     </>
