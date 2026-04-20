@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useVelocity, useSpring, animate } from 'framer-motion'
 import { EASE } from '@/lib/motion'
 
 function MagneticBtn({ children, type, onClick }: { children: React.ReactNode; type?: 'submit' | 'button'; onClick?: () => void }) {
@@ -214,11 +214,19 @@ function SliderVerify({ onComplete, validate, sending, error }: {
     }
   }, [error, x])
 
-  // Liquid fill: width + color as motion values
-  const fillW    = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
-  const fillOpacity = useTransform(x, [0, 60, 220], [0.15, 0.65, 1])
-  const blobScale   = useTransform(x, [0, 100, 220], [1, 1.14, 1.04])
-  const fillColor   = useTransform(x, [0, 220], ['#9ee600', '#C8E600'])
+  // Water blob: rises from below, tilts with drag velocity
+  const maxDragRef = useRef(260)
+  useEffect(() => {
+    if (trackRef.current) maxDragRef.current = trackRef.current.offsetWidth - THUMB
+  }, [])
+
+  const blobBottom = useTransform(x, v => {
+    const pct = Math.min(Math.max(v / maxDragRef.current, 0), 1)
+    return `${-195 + pct * 200}%`
+  })
+  const velocity  = useVelocity(x)
+  const rawTilt   = useTransform(velocity, [-900, 0, 900], [7, 0, -7])
+  const tilt      = useSpring(rawTilt, { stiffness: 260, damping: 18 })
 
   const particles = useMemo(() =>
     Array.from({ length: 28 }, (_, i) => ({
@@ -296,17 +304,31 @@ function SliderVerify({ onComplete, validate, sending, error }: {
           transition: 'border-color 0.4s ease',
         }}
       >
-        {/* Liquid fill */}
-        <motion.div style={{
-          position: 'absolute', top: '-20%', bottom: '-20%', left: 0,
-          width:            done ? '110%' : fillW,
-          backgroundColor:  done ? 'var(--accent)' : fillColor,
-          opacity:          done ? 1 : fillOpacity,
-          scaleY:           done ? 1 : blobScale,
-          borderRadius:     done ? 0 : '0 40% 40% 0 / 0 50% 50% 0',
-          transition:       done ? 'width 0.22s ease, border-radius 0.3s ease' : undefined,
-          transformOrigin:  'left center',
-        }} />
+        {/* Water blob — rises from below, curved top = wave surface */}
+        {!done ? (
+          <motion.div
+            style={{
+              position: 'absolute', left: '-10%', width: '120%',
+              height: '280%', bottom: blobBottom,
+              borderRadius: '50%',
+              background: '#C8E600',
+              rotate: tilt,
+              transformOrigin: 'center bottom',
+            }}
+            animate={{ borderRadius: [
+              '45% 55% 48% 52% / 42% 42% 58% 58%',
+              '52% 48% 55% 45% / 58% 58% 42% 42%',
+              '45% 55% 48% 52% / 42% 42% 58% 58%',
+            ]}}
+            transition={{ repeat: Infinity, duration: 2.8, ease: 'easeInOut' }}
+          />
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{ position: 'absolute', inset: 0, background: 'var(--accent)' }}
+          />
+        )}
 
         {/* Label */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
