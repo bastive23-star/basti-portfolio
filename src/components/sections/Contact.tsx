@@ -220,13 +220,13 @@ function SliderVerify({ onComplete, validate, sending, error }: {
     if (trackRef.current) maxDragRef.current = trackRef.current.offsetWidth - THUMB
   }, [])
 
-  const blobBottom = useTransform(x, v => {
+  const fillH = useTransform(x, v => {
     const pct = Math.min(Math.max(v / maxDragRef.current, 0), 1)
-    return `${-280 + pct * 280}%`
+    return `${pct * 100}%`
   })
-  const velocity  = useVelocity(x)
-  const rawTilt   = useTransform(velocity, [-900, 0, 900], [7, 0, -7])
-  const tilt      = useSpring(rawTilt, { stiffness: 260, damping: 18 })
+  const velocity = useVelocity(x)
+  const rawSkew  = useTransform(velocity, [-900, 0, 900], [6, 0, -6])
+  const skew     = useSpring(rawSkew, { stiffness: 200, damping: 16 })
 
   const particles = useMemo(() =>
     Array.from({ length: 28 }, (_, i) => ({
@@ -304,23 +304,24 @@ function SliderVerify({ onComplete, validate, sending, error }: {
           transition: 'border-color 0.4s ease',
         }}
       >
-        {/* Water blob — rises from below, curved top = wave surface */}
+        {/* Lava fill — rises from bottom, organic top edge */}
         {!done ? (
           <motion.div
             style={{
-              position: 'absolute', left: '-10%', width: '120%',
-              height: '280%', bottom: blobBottom,
-              borderRadius: '50%',
+              position: 'absolute', bottom: 0, left: '-5%', right: '-5%',
+              height: fillH,
               background: 'var(--accent)',
-              rotate: tilt,
-              transformOrigin: 'center bottom',
+              skewX: skew,
+              transformOrigin: 'bottom center',
             }}
             animate={{ borderRadius: [
-              '45% 55% 48% 52% / 42% 42% 58% 58%',
-              '52% 48% 55% 45% / 58% 58% 42% 42%',
-              '45% 55% 48% 52% / 42% 42% 58% 58%',
+              '48% 52% 0 0 / 28% 28% 0 0',
+              '55% 45% 0 0 / 18% 22% 0 0',
+              '42% 58% 0 0 / 24% 18% 0 0',
+              '58% 42% 0 0 / 20% 26% 0 0',
+              '48% 52% 0 0 / 28% 28% 0 0',
             ]}}
-            transition={{ repeat: Infinity, duration: 2.8, ease: 'easeInOut' }}
+            transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
           />
         ) : (
           <motion.div
