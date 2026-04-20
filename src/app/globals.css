@@ -109,6 +109,46 @@ h3, h4 { line-height: 1.1; }
 }
 .link-underline:hover::after { width: 100%; }
 
+/* ── Skip link — visually hidden until focused ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 999999;
+  padding: 0.55rem 1.2rem;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--ff-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 0; }
+
+/* ── Focus visible — keyboard users need a clear focus ring ── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Remove outline from mouse/touch interactions */
+:focus:not(:focus-visible) { outline: none; }
+
+/* ── Reduced motion — respect system preference ── */
+/* Framer Motion handles this via MotionConfig reducedMotion="user".    */
+/* This catches CSS-only animations (marquee, grain, etc.).              */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ── Lenis ── */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }

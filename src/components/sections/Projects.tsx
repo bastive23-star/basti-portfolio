@@ -156,12 +156,18 @@ export default function Projects() {
           {projects.map(({ num, title, category, year }, i) => (
             <motion.div
               key={i}
+              role="button"
+              tabIndex={0}
+              aria-label={`${title} — ${category}, ${year}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.07, duration: 0.6 }}
               onHoverStart={() => setHovered(i)}
               onHoverEnd={() => setHovered(null)}
+              onFocus={() => setHovered(i)}
+              onBlur={() => setHovered(null)}
+              onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.click() }}
               data-cursor="View"
               style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',

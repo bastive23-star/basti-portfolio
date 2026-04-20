@@ -12,7 +12,7 @@ export default function Home() {
     <>
       <CookieBanner />
       <Nav />
-      <main>
+      <main id="main-content">
         <Hero />
         <About />
         <Services />

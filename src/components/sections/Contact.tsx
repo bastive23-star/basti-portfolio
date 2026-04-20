@@ -240,19 +240,23 @@ function SliderVerify({ onComplete, validate, sending, error }: {
     }))
   , [])
 
+  const complete = () => {
+    if (!validate()) {
+      animate(x, 0, { type: 'spring', stiffness: 380, damping: 28 })
+      return
+    }
+    const trackW = trackRef.current?.offsetWidth ?? 320
+    x.set(trackW - THUMB)
+    setDone(true)
+    setConfetti(true)
+    setTimeout(() => setConfetti(false), 1400)
+    onComplete()
+  }
+
   const handleDragEnd = () => {
     const trackW = trackRef.current?.offsetWidth ?? 320
     if (x.get() >= trackW - THUMB - 6) {
-      // Validate before completing
-      if (!validate()) {
-        animate(x, 0, { type: 'spring', stiffness: 380, damping: 28 })
-        return
-      }
-      x.set(trackW - THUMB)
-      setDone(true)
-      setConfetti(true)
-      setTimeout(() => setConfetti(false), 1400)
-      onComplete()
+      complete()
     } else {
       animate(x, 0, { type: 'spring', stiffness: 380, damping: 28 })
     }
@@ -296,6 +300,19 @@ function SliderVerify({ onComplete, validate, sending, error }: {
       {/* Track */}
       <div
         ref={trackRef}
+        role="slider"
+        tabIndex={done ? -1 : 0}
+        aria-label="Zum Senden nach rechts ziehen oder Enter drücken"
+        aria-valuenow={done ? 100 : 0}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        onKeyDown={e => {
+          if (done) return
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') {
+            e.preventDefault()
+            complete()
+          }
+        }}
         style={{
           position: 'relative', height: 52, overflow: 'hidden',
           background: 'var(--bg)',

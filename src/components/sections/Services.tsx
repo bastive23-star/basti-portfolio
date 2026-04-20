@@ -89,6 +89,9 @@ export default function Services() {
           {services.map(({ num, title, desc, tags }, i) => (
             <motion.div
               key={i}
+              role="button"
+              tabIndex={0}
+              aria-expanded={open === i}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -96,6 +99,7 @@ export default function Services() {
               style={{ borderTop: '1px solid var(--border)' }}
               data-cursor={open === i ? '−' : '+'}
               onClick={() => setOpen(open === i ? null : i)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(open === i ? null : i) } }}
               onHoverStart={() => setHovered(i)}
               onHoverEnd={() => setHovered(null)}
             >

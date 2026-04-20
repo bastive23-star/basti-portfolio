@@ -244,11 +244,38 @@ const OPEN    = 'polygon(0% 0%, 100% 0%, 100% 100%, 87% 100%, 62% 100%, 50% 100%
 const SUCTION = 'polygon(0% 0%, 100% 0%, 100% 48%,  87% 41%,  62% 35%,  50% 32%,  38% 35%,  13% 41%,  0% 48%)'
 
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const panelCtrl = useAnimation()
+  const panelCtrl  = useAnimation()
+  const panelRef   = useRef<HTMLDivElement>(null)
 
+  // Lock scroll + focus trap
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    // Move focus into menu after animation starts
+    const t = setTimeout(() => {
+      const first = panelRef.current?.querySelector<HTMLElement>('a, button, [tabindex]')
+      first?.focus()
+    }, 460)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const focusable = panelRef.current?.querySelectorAll<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])')
+      if (!focusable?.length) return
+      const first = focusable[0]
+      const last  = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus() }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus() }
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => { clearTimeout(t); document.removeEventListener('keydown', onKey) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
   useEffect(() => {
@@ -268,8 +295,11 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   return (
     <motion.div
+      ref={panelRef}
       initial={{ clipPath: CLOSED }}
       animate={panelCtrl}
+      aria-modal={open}
+      aria-label="Navigation"
       style={{
         position: 'fixed', inset: 0, zIndex: 97,
         background: 'var(--bg)',

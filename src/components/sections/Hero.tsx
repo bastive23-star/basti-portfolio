@@ -298,6 +298,7 @@ export default function Hero() {
             src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`}
             muted playsInline preload="auto"
             autoPlay={isMobile} loop={isMobile}
+            aria-hidden
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
           <div style={{

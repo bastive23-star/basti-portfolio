@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { DM_Sans, DM_Mono } from 'next/font/google'
 import ClientShell from '@/components/ui/ClientShell'
+import MotionProvider from '@/components/ui/MotionProvider'
 import PasswordGate from '@/components/ui/PasswordGate'
 import './globals.css'
 
@@ -73,8 +74,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
-        <ClientShell />
-        <PasswordGate>{children}</PasswordGate>
+        <a href="#main-content" className="skip-link">Zum Hauptinhalt springen</a>
+        <MotionProvider>
+          <ClientShell />
+          <PasswordGate>{children}</PasswordGate>
+        </MotionProvider>
       </body>
     </html>
   )
