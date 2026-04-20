@@ -19,7 +19,7 @@ export default function Datenschutz() {
         </section>
         <section>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>2. Verantwortliche Stelle</h2>
-          <p>Vorname Nachname, Straße Hausnummer, PLZ Stadt<br />E-Mail: hallo@example.com</p>
+          <p>Sebastian Vitzthum<br />Demleitnerstraße 11<br />81371 München<br />Deutschland<br />E-Mail: sebastian.vitzthum@vizz.de</p>
         </section>
         <section>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>3. Datenerfassung auf dieser Website</h2>
@@ -35,7 +35,7 @@ export default function Datenschutz() {
         </section>
         <section>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>6. Deine Rechte</h2>
-          <p>Du hast jederzeit das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner gespeicherten personenbezogenen Daten. Wende dich dazu an: hallo@example.com</p>
+          <p>Du hast jederzeit das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner gespeicherten personenbezogenen Daten. Wende dich dazu an: sebastian.vitzthum@vizz.de</p>
         </section>
       </div>
     </main>
