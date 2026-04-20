@@ -258,10 +258,9 @@ export default function Hero() {
     if (isMobile) return
     const video = videoRef.current
     if (!video) return
-    const START = 3
     return scrollYProgress.on('change', v => {
       if (video.readyState >= 2 && isFinite(video.duration)) {
-        video.currentTime = START + v * Math.max(0, video.duration - START)
+        video.currentTime = v * video.duration
       }
     })
   }, [scrollYProgress, isMobile])
@@ -299,7 +298,6 @@ export default function Hero() {
             src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`}
             muted playsInline preload="auto"
             autoPlay={isMobile} loop={isMobile}
-            onLoadedMetadata={e => { (e.currentTarget as HTMLVideoElement).currentTime = 3 }}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
           <div style={{
