@@ -222,7 +222,7 @@ function SliderVerify({ onComplete, validate, sending, error }: {
 
   const blobBottom = useTransform(x, v => {
     const pct = Math.min(Math.max(v / maxDragRef.current, 0), 1)
-    return `${-195 + pct * 200}%`
+    return `${-280 + pct * 285}%`
   })
   const velocity  = useVelocity(x)
   const rawTilt   = useTransform(velocity, [-900, 0, 900], [7, 0, -7])
@@ -311,7 +311,7 @@ function SliderVerify({ onComplete, validate, sending, error }: {
               position: 'absolute', left: '-10%', width: '120%',
               height: '280%', bottom: blobBottom,
               borderRadius: '50%',
-              background: '#C8E600',
+              background: 'var(--accent)',
               rotate: tilt,
               transformOrigin: 'center bottom',
             }}
