@@ -81,7 +81,7 @@ export default function Services() {
             <RevealText delay={0.1}><h2 style={{ fontSize: 'clamp(2.6rem, 5.5vw, 5rem)' }}>Alles aus<br /><em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>einer Hand.</em></h2></RevealText>
           </div>
           <motion.span className="tag" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
-            {services.length}+ Skills
+            {services.length} Skills
           </motion.span>
         </motion.div>
 
