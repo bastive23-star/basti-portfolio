@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate } from 'framer-motion'
 import { EASE } from '@/lib/motion'
 
 function MagneticBtn({ children, type, onClick }: { children: React.ReactNode; type?: 'submit' | 'button'; onClick?: () => void }) {
@@ -189,6 +189,147 @@ function AnimatedField({
   )
 }
 
+// ─── Slider CAPTCHA ───────────────────────────────────────────────────────────
+const THUMB = 52
+const BURST_COLORS = ['#C8E600', '#ffffff', '#d4f857', '#f0ff70', '#8fdb00', '#e8ffb0']
+
+function SliderVerify({ onComplete, sending }: { onComplete: () => void; sending: boolean }) {
+  const trackRef  = useRef<HTMLDivElement>(null)
+  const x         = useMotionValue(0)
+  const [done, setDone]           = useState(false)
+  const [confetti, setConfetti]   = useState(false)
+
+  const fillW = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
+
+  const particles = useMemo(() =>
+    Array.from({ length: 28 }, (_, i) => ({
+      id:      i,
+      angle:   (360 / 28) * i + (Math.random() * 18 - 9),
+      dist:    52 + Math.random() * 72,
+      color:   BURST_COLORS[i % BURST_COLORS.length],
+      size:    4 + Math.random() * 4,
+      circle:  Math.random() > 0.45,
+      delay:   Math.random() * 0.1,
+    }))
+  , [])
+
+  const handleDragEnd = () => {
+    const trackW = trackRef.current?.offsetWidth ?? 320
+    if (x.get() >= trackW - THUMB - 6) {
+      x.set(trackW - THUMB)
+      setDone(true)
+      setConfetti(true)
+      setTimeout(() => setConfetti(false), 1400)
+      onComplete()
+    } else {
+      animate(x, 0, { type: 'spring', stiffness: 380, damping: 28 })
+    }
+  }
+
+  return (
+    <div style={{ position: 'relative', userSelect: 'none' }}>
+
+      {/* Confetti burst */}
+      <AnimatePresence>
+        {confetti && (
+          <div aria-hidden style={{ position: 'absolute', left: '50%', top: '50%', pointerEvents: 'none', zIndex: 10 }}>
+            {particles.map(p => {
+              const rad = (p.angle * Math.PI) / 180
+              return (
+                <motion.span
+                  key={p.id}
+                  initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                  animate={{
+                    x: Math.cos(rad) * p.dist,
+                    y: Math.sin(rad) * p.dist,
+                    scale: [0, 1.3, 1],
+                    opacity: [1, 1, 0],
+                    rotate: Math.random() * 540 - 270,
+                  }}
+                  transition={{ duration: 0.7 + p.delay * 2, ease: 'easeOut', delay: p.delay }}
+                  style={{
+                    position: 'absolute', display: 'block',
+                    width: p.size, height: p.size,
+                    borderRadius: p.circle ? '50%' : 2,
+                    background: p.color,
+                    transform: 'translate(-50%,-50%)',
+                  }}
+                />
+              )
+            })}
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Track */}
+      <div
+        ref={trackRef}
+        style={{
+          position: 'relative', height: 52, overflow: 'hidden',
+          background: 'var(--bg)',
+          border: `1px solid ${done ? 'transparent' : 'var(--border-mid)'}`,
+          borderRadius: 3,
+          transition: 'border-color 0.4s ease',
+        }}
+      >
+        {/* Fill */}
+        <motion.div style={{
+          position: 'absolute', inset: 0,
+          width: done ? '100%' : fillW,
+          background: done ? 'var(--accent)' : 'rgba(200,230,0,0.1)',
+          transition: done ? 'width 0.22s ease, background 0.3s ease' : undefined,
+        }} />
+
+        {/* Label */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+          <AnimatePresence mode="wait">
+            {done ? (
+              <motion.div key="ok"
+                initial={{ opacity: 0, scale: 0.75 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, ease: EASE }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <path d="M2 6.5l3.5 3.5 5.5-6" stroke="var(--bg)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.58rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--bg)' }}>
+                  {sending ? 'Wird gesendet …' : 'Bestätigt'}
+                </span>
+              </motion.div>
+            ) : (
+              <motion.span key="hint" exit={{ opacity: 0 }}
+                style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.58rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--fg-faint)' }}
+              >
+                Ziehen zum Senden →
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Thumb */}
+        {!done && (
+          <motion.div
+            drag="x" dragConstraints={trackRef} dragElastic={0} dragMomentum={false}
+            style={{
+              x, position: 'absolute', top: 0, left: 0, bottom: 0,
+              width: THUMB, zIndex: 3,
+              background: 'var(--fg)', borderRadius: '2px 0 0 2px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'grab', touchAction: 'none',
+            }}
+            whileDrag={{ cursor: 'grabbing' }}
+            onDragEnd={handleDragEnd}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M5 3.5L9 7l-4 3.5" stroke="var(--bg)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Contact() {
   const [sent, setSent] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -198,11 +339,10 @@ export default function Contact() {
   const ghostY = useTransform(scrollYProgress, [0, 1], ['-6%',  '16%'])
   const ghostX = useTransform(scrollYProgress, [0, 1], ['-8%',  '4%'])
 
-  const [error, setError] = useState(false)
+  const [error, setError]     = useState(false)
   const [sending, setSending] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const submitForm = async () => {
     setSending(true)
     setError(false)
     try {
@@ -324,7 +464,9 @@ export default function Contact() {
                 <p style={{ fontFamily: 'var(--ff-body)', fontSize: '0.88rem', color: 'var(--fg-mid)', fontWeight: 300 }}>Ich melde mich innerhalb von 24 Stunden.</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+              <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column' }}>
+                {/* Honeypot — bots fill this, humans don't see it */}
+                <input name="_gotcha" type="text" tabIndex={-1} aria-hidden style={{ display: 'none' }} />
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}>
                   <AnimatedField id="name" label="Dein Name *" type="text" placeholder="Max Mustermann"
                     value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
@@ -349,9 +491,7 @@ export default function Contact() {
                   </p>
                 )}
 
-                <MagneticBtn type="submit">
-                  {sending ? 'Wird gesendet…' : 'Nachricht senden'}
-                </MagneticBtn>
+                <SliderVerify onComplete={submitForm} sending={sending} />
               </form>
             )}
           </motion.div>
