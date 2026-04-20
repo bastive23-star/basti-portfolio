@@ -225,8 +225,8 @@ function SliderVerify({ onComplete, validate, sending, error }: {
     return `${pct * 100}%`
   })
   const velocity = useVelocity(x)
-  const rawSkew  = useTransform(velocity, [-900, 0, 900], [6, 0, -6])
-  const skew     = useSpring(rawSkew, { stiffness: 200, damping: 16 })
+  const rawSkew  = useTransform(velocity, [-900, 0, 900], [12, 0, -12])
+  const skew     = useSpring(rawSkew, { stiffness: 140, damping: 10 })
 
   const particles = useMemo(() =>
     Array.from({ length: 28 }, (_, i) => ({
@@ -308,20 +308,27 @@ function SliderVerify({ onComplete, validate, sending, error }: {
         {!done ? (
           <motion.div
             style={{
-              position: 'absolute', bottom: 0, left: '-5%', right: '-5%',
+              position: 'absolute', bottom: 0, left: '-8%', right: '-8%',
               height: fillH,
               background: 'var(--accent)',
               skewX: skew,
               transformOrigin: 'bottom center',
             }}
-            animate={{ borderRadius: [
-              '48% 52% 0 0 / 28% 28% 0 0',
-              '55% 45% 0 0 / 18% 22% 0 0',
-              '42% 58% 0 0 / 24% 18% 0 0',
-              '58% 42% 0 0 / 20% 26% 0 0',
-              '48% 52% 0 0 / 28% 28% 0 0',
-            ]}}
-            transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+            animate={{
+              borderRadius: [
+                '48% 52% 0 0 / 32% 28% 0 0',
+                '62% 38% 0 0 / 18% 28% 0 0',
+                '38% 62% 0 0 / 28% 16% 0 0',
+                '55% 45% 0 0 / 14% 30% 0 0',
+                '44% 56% 0 0 / 30% 12% 0 0',
+                '60% 40% 0 0 / 20% 32% 0 0',
+                '40% 60% 0 0 / 26% 18% 0 0',
+                '48% 52% 0 0 / 32% 28% 0 0',
+              ],
+              y: [0, -4, 2, -5, 1, -3, 3, 0],
+              scaleX: [1, 1.04, 0.97, 1.06, 0.98, 1.03, 0.96, 1],
+            }}
+            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
           />
         ) : (
           <motion.div
