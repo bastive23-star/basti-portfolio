@@ -184,13 +184,12 @@ export default function Projects() {
               </div>
 
               <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                <motion.span
+                <span
                   className="tag"
-                  style={{ display: 'none' }}
-                  animate={{ display: 'block', opacity: hovered === i ? 1 : 0 }}
+                  style={{ opacity: hovered === i ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: 'none' }}
                 >
                   {category}
-                </motion.span>
+                </span>
                 <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{year}</span>
                 <motion.div
                   animate={{ x: hovered === i ? 4 : 0, opacity: hovered === i ? 1 : 0.3 }}

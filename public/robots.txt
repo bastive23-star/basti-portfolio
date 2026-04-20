@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://basti-vitzthum.com/sitemap.xml

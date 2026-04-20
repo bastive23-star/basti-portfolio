@@ -30,8 +30,8 @@ export default function Datenschutz() {
           <p>Diese Website verwendet ausschließlich technisch notwendige Cookies. Für statistische Auswertungen werden Cookies nur mit deiner ausdrücklichen Einwilligung gesetzt. Du kannst deine Einwilligung jederzeit durch Löschen des Browser-Speichers widerrufen.</p>
         </section>
         <section>
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>5. Google Fonts</h2>
-          <p>Diese Website nutzt Google Fonts. Anbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Beim Laden der Seite werden die Schriftarten direkt von Google-Servern geladen, wodurch eine Verbindung zu Google hergestellt wird. Weitere Infos: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--fg)' }}>Google Datenschutz</a>.</p>
+          <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>5. Schriftarten</h2>
+          <p>Diese Website verwendet die Schriftart „DM Sans" und „DM Mono". Die Schriftdateien werden lokal auf dem Server dieser Website gehostet und beim Seitenaufruf direkt von dort geladen. Es findet dabei keine Verbindung zu externen Servern statt. Es werden dabei keine personenbezogenen Daten an Dritte übertragen.</p>
         </section>
         <section>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>6. Deine Rechte</h2>
