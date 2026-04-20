@@ -30,12 +30,6 @@ const services = [
   },
   {
     num: '05',
-    title: 'Musik & Sound',
-    desc: 'Eigene Musik und Sounddesign für Videos, Reels und Kampagnen. Kein Stock-Sound, sondern Ton, der wirklich zum Bild passt — komponiert und produziert.',
-    tags: ['Komposition', 'Sounddesign', 'Jingle', 'Podcast', 'Voice-Over'],
-  },
-  {
-    num: '06',
     title: 'Social Media',
     desc: 'Content produzieren und veröffentlichen — Reels, Stories, Posts, Thumbnails. Kein leeres Posting, sondern Bild und Ton, die wirklich performen.',
     tags: ['Instagram', 'TikTok', 'LinkedIn', 'YouTube', 'Reels'],

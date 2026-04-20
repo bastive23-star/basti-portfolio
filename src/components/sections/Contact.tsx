@@ -478,7 +478,7 @@ export default function Contact() {
               <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>interessant?</em>
             </h2>
             <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.92rem, 1.2vw, 1rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '0.9rem', maxWidth: '36ch' }}>
-              Ich suche gerade eine Festanstellung in München. Content Generalist — Video, Foto, Grafik, Animation, Musik, KI. Alles selbst produziert.
+              Ich suche gerade eine Festanstellung in München. Content Generalist — Video, Foto, Grafik, Animation, KI. Alles selbst produziert.
             </p>
             <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.92rem, 1.2vw, 1rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '2.5rem', maxWidth: '36ch' }}>
               Wenn du denkst, ich passe zu euch — schreib mir.<br />Ich antworte schnell.

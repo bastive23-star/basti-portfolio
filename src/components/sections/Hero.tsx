@@ -346,7 +346,7 @@ export default function Hero() {
             transition={d(0.12)}
           >
             <span style={{ display: 'block', fontFamily: 'var(--ff-mono)', fontWeight: 400, fontSize: 'clamp(0.7rem, 1.1vw, 0.88rem)', color: 'var(--fg-faint)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '0.6em' }}>
-              Video · Foto · Grafik · Motion · KI · Musik
+              Video · Foto · Grafik · Motion · KI
             </span>
           </motion.div>
 
@@ -375,7 +375,7 @@ export default function Hero() {
             transition={d(0.45)}
           >
             <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.88rem,1.2vw,1rem)', color: 'var(--fg-mid)', maxWidth: '38ch', lineHeight: 1.8, fontWeight: 300 }}>
-              Einer, der Video, Foto, Grafik, Animation, Musik und KI selbst macht — von der Idee bis zum fertigen File.
+              Einer, der Video, Foto, Grafik, Animation und KI selbst macht — von der Idee bis zum fertigen File.
             </p>
             <MagneticLink href="#projects">
               Arbeiten ansehen

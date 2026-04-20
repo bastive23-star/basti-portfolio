@@ -116,7 +116,7 @@ function ParallaxPhotos() {
 
 // ── Scroll marquee ────────────────────────────────────────────────────────────
 function Marquee() {
-  const words = ['Video', 'Foto', 'Motion', 'Grafik', 'Animation', 'KI', 'Musik', 'Social Media']
+  const words = ['Video', 'Foto', 'Motion', 'Grafik', 'Animation', 'KI', 'Social Media']
   return (
     <div style={{ overflow: 'hidden', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '0.9rem 0', marginBottom: 'clamp(3rem, 6vh, 5rem)' }}>
       <motion.div
