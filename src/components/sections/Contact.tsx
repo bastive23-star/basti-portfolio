@@ -193,11 +193,19 @@ function AnimatedField({
 const THUMB = 52
 const BURST_COLORS = ['#C8E600', '#ffffff', '#d4f857', '#f0ff70', '#8fdb00', '#e8ffb0']
 
-function SliderVerify({ onComplete, sending }: { onComplete: () => void; sending: boolean }) {
+function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; sending: boolean; error: boolean }) {
   const trackRef  = useRef<HTMLDivElement>(null)
   const x         = useMotionValue(0)
   const [done, setDone]           = useState(false)
   const [confetti, setConfetti]   = useState(false)
+
+  // Reset when submission fails
+  useEffect(() => {
+    if (error) {
+      setDone(false)
+      animate(x, 0, { type: 'spring', stiffness: 380, damping: 28 })
+    }
+  }, [error, x])
 
   const fillW = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
 
@@ -491,7 +499,7 @@ export default function Contact() {
                   </p>
                 )}
 
-                <SliderVerify onComplete={submitForm} sending={sending} />
+                <SliderVerify onComplete={submitForm} sending={sending} error={error} />
               </form>
             )}
           </motion.div>
