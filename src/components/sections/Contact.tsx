@@ -46,10 +46,10 @@ function MagneticBtn({ children, type, onClick }: { children: React.ReactNode; t
 }
 
 function AnimatedField({
-  id, label, type, placeholder, value, onChange, rows,
+  id, label, type, placeholder, value, onChange, rows, invalid,
 }: {
   id: string; label: string; type?: string; placeholder: string
-  value: string; onChange: (v: string) => void; rows?: number
+  value: string; onChange: (v: string) => void; rows?: number; invalid?: boolean
 }) {
   const [focused,          setFocused]          = useState(false)
   const [hovered,          setHovered]          = useState(false)
@@ -113,7 +113,9 @@ function AnimatedField({
   }
 
   return (
-    <div
+    <motion.div
+      animate={invalid ? { x: [0, -7, 7, -5, 5, -3, 0] } : { x: 0 }}
+      transition={{ duration: 0.45, ease: 'easeInOut' }}
       style={{ position: 'relative', marginBottom: '1.4rem' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -125,7 +127,7 @@ function AnimatedField({
           y: active ? 0 : 22,
           fontSize: active ? '0.55rem' : '0.82rem',
           letterSpacing: active ? '0.18em' : '0.02em',
-          color: focused ? 'var(--accent)' : active ? 'var(--fg-faint)' : 'var(--fg-faint)',
+          color: invalid ? '#e05555' : focused ? 'var(--accent)' : active ? 'var(--fg-faint)' : 'var(--fg-faint)',
         }}
         transition={{ duration: 0.28, ease: EASE }}
         style={{
@@ -185,7 +187,7 @@ function AnimatedField({
           style={baseStyle}
         />
       )}
-    </div>
+    </motion.div>
   )
 }
 
@@ -207,7 +209,10 @@ function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; 
     }
   }, [error, x])
 
-  const fillW = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
+  const fillW       = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
+  const fillOpacity = useTransform(x, [0, 80, 240], [0.18, 0.7, 1])
+  const blobScale   = useTransform(x, [0, 100, 240], [1, 1.12, 1.03])
+  const fillHue     = useTransform(x, [0, 240], [60, 80]) // lime shifts slightly warmer
 
   const particles = useMemo(() =>
     Array.from({ length: 28 }, (_, i) => ({
@@ -280,12 +285,18 @@ function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; 
           transition: 'border-color 0.4s ease',
         }}
       >
-        {/* Fill */}
+        {/* Liquid fill */}
         <motion.div style={{
-          position: 'absolute', inset: 0,
-          width: done ? '100%' : fillW,
-          background: done ? 'var(--accent)' : 'rgba(200,230,0,0.1)',
-          transition: done ? 'width 0.22s ease, background 0.3s ease' : undefined,
+          position: 'absolute', top: '-20%', bottom: '-20%', left: 0,
+          width: done ? '110%' : fillW,
+          background: done
+            ? 'var(--accent)'
+            : `hsl(${fillHue}, 100%, 52%)`,
+          opacity: done ? 1 : fillOpacity,
+          scaleY: done ? 1 : blobScale,
+          borderRadius: done ? 0 : '0 40% 40% 0 / 0 50% 50% 0',
+          transition: done ? 'width 0.22s ease, border-radius 0.3s ease, opacity 0.2s' : undefined,
+          transformOrigin: 'left center',
         }} />
 
         {/* Label */}
@@ -305,11 +316,19 @@ function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; 
                 </span>
               </motion.div>
             ) : (
-              <motion.span key="hint" exit={{ opacity: 0 }}
-                style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.58rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--fg-faint)' }}
+              <motion.div key="hint" exit={{ opacity: 0 }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}
               >
-                Ziehen zum Senden →
-              </motion.span>
+                <motion.svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.4, ease: 'easeInOut' }}
+                >
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="var(--fg-mid)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                </motion.svg>
+                <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.58rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--fg-mid)' }}>
+                  Ziehen zum Senden
+                </span>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -347,10 +366,18 @@ export default function Contact() {
   const ghostY = useTransform(scrollYProgress, [0, 1], ['-6%',  '16%'])
   const ghostX = useTransform(scrollYProgress, [0, 1], ['-8%',  '4%'])
 
-  const [error, setError]     = useState(false)
-  const [sending, setSending] = useState(false)
+  const [error, setError]       = useState(false)
+  const [sending, setSending]   = useState(false)
+  const [invalidFields, setInvalidFields] = useState<string[]>([])
+
+  const validate = () => {
+    const missing = (['name', 'email', 'message'] as const).filter(k => !form[k].trim())
+    setInvalidFields(missing)
+    return missing.length === 0
+  }
 
   const submitForm = async () => {
+    if (!validate()) return
     setSending(true)
     setError(false)
     try {
@@ -477,15 +504,18 @@ export default function Contact() {
                 <input name="_gotcha" type="text" tabIndex={-1} aria-hidden style={{ display: 'none' }} />
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}>
                   <AnimatedField id="name" label="Dein Name *" type="text" placeholder="Max Mustermann"
-                    value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
+                    value={form.name} invalid={invalidFields.includes('name')}
+                    onChange={v => { setForm(f => ({ ...f, name: v })); setInvalidFields(f => f.filter(x => x !== 'name')) }} />
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.6 }}>
                   <AnimatedField id="email" label="E-Mail-Adresse *" type="email" placeholder="max@unternehmen.de"
-                    value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} />
+                    value={form.email} invalid={invalidFields.includes('email')}
+                    onChange={v => { setForm(f => ({ ...f, email: v })); setInvalidFields(f => f.filter(x => x !== 'email')) }} />
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }} style={{ marginBottom: '2rem' }}>
                   <AnimatedField id="message" label="Was suchst du? *" placeholder="Welche Rolle, welches Team, was du dir vorstellst..."
-                    value={form.message} onChange={v => setForm(f => ({ ...f, message: v }))} rows={4} />
+                    value={form.message} invalid={invalidFields.includes('message')}
+                    onChange={v => { setForm(f => ({ ...f, message: v })); setInvalidFields(f => f.filter(x => x !== 'message')) }} rows={4} />
                 </motion.div>
 
                 <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', color: 'var(--fg-faint)', lineHeight: 1.7, marginBottom: '1.8rem' }}>
