@@ -198,9 +198,26 @@ export default function Contact() {
   const ghostY = useTransform(scrollYProgress, [0, 1], ['-6%',  '16%'])
   const ghostX = useTransform(scrollYProgress, [0, 1], ['-8%',  '4%'])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState(false)
+  const [sending, setSending] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
+    setSending(true)
+    setError(false)
+    try {
+      const res = await fetch('https://formspree.io/f/mkokvnpg', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
+      })
+      if (res.ok) setSent(true)
+      else setError(true)
+    } catch {
+      setError(true)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -326,8 +343,14 @@ export default function Contact() {
                   <a href="/datenschutz" style={{ color: 'var(--fg-mid)' }}>Datenschutz</a>
                 </p>
 
+                {error && (
+                  <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: '#e05', marginBottom: '1rem', letterSpacing: '0.08em' }}>
+                    Etwas ist schiefgelaufen — bitte versuch es nochmal.
+                  </p>
+                )}
+
                 <MagneticBtn type="submit">
-                  Nachricht senden
+                  {sending ? 'Wird gesendet…' : 'Nachricht senden'}
                 </MagneticBtn>
               </form>
             )}
