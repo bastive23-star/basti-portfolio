@@ -279,8 +279,8 @@ export default function Hero() {
         )}
       </AnimatePresence>
 
-      {/* Outer section is tall — gives scroll room so video scrubs slowly */}
-      <section ref={sectionRef} style={{ height: '220dvh' }}>
+      {/* Outer section is tall on desktop — gives scroll room so video scrubs slowly. Mobile: normal height */}
+      <section ref={sectionRef} style={{ height: isMobile ? '100dvh' : '220dvh' }}>
       {/* Sticky inner — stays in viewport while the outer section scrolls */}
       <div
         style={{ position: 'sticky', top: 0, height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 'clamp(7rem,15vh,10rem) clamp(1.5rem,5vw,5rem) clamp(3rem,8vh,5.5rem)', overflow: 'hidden', background: 'var(--bg)' }}
