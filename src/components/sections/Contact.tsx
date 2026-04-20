@@ -195,11 +195,16 @@ function AnimatedField({
 const THUMB = 52
 const BURST_COLORS = ['#C8E600', '#ffffff', '#d4f857', '#f0ff70', '#8fdb00', '#e8ffb0']
 
-function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; sending: boolean; error: boolean }) {
+function SliderVerify({ onComplete, validate, sending, error }: {
+  onComplete: () => void
+  validate: () => boolean
+  sending: boolean
+  error: boolean
+}) {
   const trackRef  = useRef<HTMLDivElement>(null)
   const x         = useMotionValue(0)
-  const [done, setDone]           = useState(false)
-  const [confetti, setConfetti]   = useState(false)
+  const [done, setDone]         = useState(false)
+  const [confetti, setConfetti] = useState(false)
 
   // Reset when submission fails
   useEffect(() => {
@@ -209,26 +214,32 @@ function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; 
     }
   }, [error, x])
 
-  const fillW       = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
-  const fillOpacity = useTransform(x, [0, 80, 240], [0.18, 0.7, 1])
-  const blobScale   = useTransform(x, [0, 100, 240], [1, 1.12, 1.03])
-  const fillHue     = useTransform(x, [0, 240], [60, 80]) // lime shifts slightly warmer
+  // Liquid fill: width + color as motion values
+  const fillW    = useTransform(x, v => `${Math.max(v + THUMB, 0)}px`)
+  const fillOpacity = useTransform(x, [0, 60, 220], [0.15, 0.65, 1])
+  const blobScale   = useTransform(x, [0, 100, 220], [1, 1.14, 1.04])
+  const fillColor   = useTransform(x, [0, 220], ['#9ee600', '#C8E600'])
 
   const particles = useMemo(() =>
     Array.from({ length: 28 }, (_, i) => ({
-      id:      i,
-      angle:   (360 / 28) * i + (Math.random() * 18 - 9),
-      dist:    52 + Math.random() * 72,
-      color:   BURST_COLORS[i % BURST_COLORS.length],
-      size:    4 + Math.random() * 4,
-      circle:  Math.random() > 0.45,
-      delay:   Math.random() * 0.1,
+      id:     i,
+      angle:  (360 / 28) * i + (Math.random() * 18 - 9),
+      dist:   52 + Math.random() * 72,
+      color:  BURST_COLORS[i % BURST_COLORS.length],
+      size:   4 + Math.random() * 4,
+      circle: Math.random() > 0.45,
+      delay:  Math.random() * 0.1,
     }))
   , [])
 
   const handleDragEnd = () => {
     const trackW = trackRef.current?.offsetWidth ?? 320
     if (x.get() >= trackW - THUMB - 6) {
+      // Validate before completing
+      if (!validate()) {
+        animate(x, 0, { type: 'spring', stiffness: 380, damping: 28 })
+        return
+      }
       x.set(trackW - THUMB)
       setDone(true)
       setConfetti(true)
@@ -288,15 +299,13 @@ function SliderVerify({ onComplete, sending, error }: { onComplete: () => void; 
         {/* Liquid fill */}
         <motion.div style={{
           position: 'absolute', top: '-20%', bottom: '-20%', left: 0,
-          width: done ? '110%' : fillW,
-          background: done
-            ? 'var(--accent)'
-            : `hsl(${fillHue}, 100%, 52%)`,
-          opacity: done ? 1 : fillOpacity,
-          scaleY: done ? 1 : blobScale,
-          borderRadius: done ? 0 : '0 40% 40% 0 / 0 50% 50% 0',
-          transition: done ? 'width 0.22s ease, border-radius 0.3s ease, opacity 0.2s' : undefined,
-          transformOrigin: 'left center',
+          width:            done ? '110%' : fillW,
+          backgroundColor:  done ? 'var(--accent)' : fillColor,
+          opacity:          done ? 1 : fillOpacity,
+          scaleY:           done ? 1 : blobScale,
+          borderRadius:     done ? 0 : '0 40% 40% 0 / 0 50% 50% 0',
+          transition:       done ? 'width 0.22s ease, border-radius 0.3s ease' : undefined,
+          transformOrigin:  'left center',
         }} />
 
         {/* Label */}
@@ -529,7 +538,7 @@ export default function Contact() {
                   </p>
                 )}
 
-                <SliderVerify onComplete={submitForm} sending={sending} error={error} />
+                <SliderVerify onComplete={submitForm} validate={validate} sending={sending} error={error} />
               </form>
             )}
           </motion.div>
