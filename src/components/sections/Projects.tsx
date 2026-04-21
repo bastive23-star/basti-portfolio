@@ -1,14 +1,15 @@
 'use client'
 import { useRef, useState } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import { EASE } from '@/lib/motion'
 
 const projects = [
-  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '/images/projects/projekt-1.webm' },
-  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '/images/projects/projekt-2.webm' },
-  { num: '03', title: 'Social Campaign Placeholder', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.', video: '' },
-  { num: '04', title: 'AI Visual Placeholder', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '' },
-  { num: '05', title: 'Event Coverage Placeholder', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Bild & Film von einem großen Event.', video: '' },
+  { num: '01', title: 'Imagefilm Placeholder', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '/images/projects/projekt-1.webm', href: '' },
+  { num: '02', title: 'Brand Motion Placeholder', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '/images/projects/projekt-2.webm', href: '' },
+  { num: '03', title: 'Social Campaign Placeholder', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.', video: '', href: '' },
+  { num: '04', title: 'AI Visual Placeholder', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '', href: '' },
+  { num: '05', title: 'Zu meinen Fotos', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Portraits, Events & mehr.', video: '', href: '/projects/fotografie' },
 ]
 
 export default function Projects() {
@@ -153,61 +154,110 @@ export default function Projects() {
           </motion.div>
 
           {/* Project rows */}
-          {projects.map(({ num, title, category, year }, i) => (
-            <motion.div
-              key={i}
-              role="button"
-              tabIndex={0}
-              aria-label={`${title} — ${category}, ${year}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07, duration: 0.6 }}
-              onHoverStart={() => setHovered(i)}
-              onHoverEnd={() => setHovered(null)}
-              onFocus={() => setHovered(i)}
-              onBlur={() => setHovered(null)}
-              onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.click() }}
-              data-cursor="View"
-              style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                padding: 'clamp(1.2rem,3vh,1.9rem) 0',
-                borderTop: '1px solid var(--border)',
-                transition: 'opacity 0.25s ease',
-                opacity: hovered !== null && hovered !== i ? 0.25 : 1,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem' }}>
-                <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{num}</span>
-                <motion.h3
-                  className="font-display"
-                  style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, color: 'var(--fg)' }}
-                  animate={{ x: hovered === i ? 8 : 0 }}
-                  transition={{ duration: 0.3, ease: EASE }}
-                >
-                  {title}
-                </motion.h3>
-              </div>
+          {projects.map(({ num, title, category, year, href }, i) => {
+            const rowContent = (
+              <>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem' }}>
+                  <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{num}</span>
+                  {href ? (
+                    // Fancy sweep: accent text slides in over fg text via clip-path
+                    <motion.div
+                      className="font-display"
+                      style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, position: 'relative', display: 'inline-block' }}
+                      animate={{ x: hovered === i ? 8 : 0 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                    >
+                      {/* Base layer */}
+                      <span style={{ color: 'var(--fg)', display: 'block' }}>{title}</span>
+                      {/* Accent sweep layer */}
+                      <motion.span
+                        aria-hidden
+                        style={{ position: 'absolute', inset: 0, color: 'var(--accent)', display: 'block', whiteSpace: 'nowrap' }}
+                        animate={{ clipPath: hovered === i ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)' }}
+                        transition={{ duration: 0.45, ease: EASE }}
+                      >
+                        {title}
+                      </motion.span>
+                    </motion.div>
+                  ) : (
+                    <motion.h3
+                      className="font-display"
+                      style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, color: 'var(--fg)' }}
+                      animate={{ x: hovered === i ? 8 : 0 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                    >
+                      {title}
+                    </motion.h3>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                  <span
+                    className="tag"
+                    style={{ opacity: hovered === i ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: 'none' }}
+                  >
+                    {category}
+                  </span>
+                  <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{year}</span>
+                  <motion.div
+                    animate={{ x: hovered === i ? 4 : 0, opacity: hovered === i ? 1 : 0.3 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 12L12 2M12 2H5M12 2v7" stroke="var(--fg)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </motion.div>
+                </div>
+              </>
+            )
 
-              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                <span
-                  className="tag"
-                  style={{ opacity: hovered === i ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: 'none' }}
-                >
-                  {category}
-                </span>
-                <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{year}</span>
-                <motion.div
-                  animate={{ x: hovered === i ? 4 : 0, opacity: hovered === i ? 1 : 0.3 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2 12L12 2M12 2H5M12 2v7" stroke="var(--fg)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </motion.div>
-              </div>
-            </motion.div>
-          ))}
+            const sharedStyle: React.CSSProperties = {
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: 'clamp(1.2rem,3vh,1.9rem) 0',
+              borderTop: '1px solid var(--border)',
+              transition: 'opacity 0.25s ease',
+              // href rows are real links — never dim them
+              opacity: href ? 1 : (hovered !== null && hovered !== i ? 0.25 : 1),
+              textDecoration: 'none',
+              color: 'inherit',
+            }
+
+            return href ? (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07, duration: 0.6 }}
+                onHoverStart={() => setHovered(i)}
+                onHoverEnd={() => setHovered(null)}
+                data-cursor="View"
+                style={{ borderTop: '1px solid var(--border)' }}
+              >
+                <Link href={href} style={sharedStyle}>
+                  {rowContent}
+                </Link>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={i}
+                role="button"
+                tabIndex={0}
+                aria-label={`${title} — ${category}, ${year}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07, duration: 0.6 }}
+                onHoverStart={() => setHovered(i)}
+                onHoverEnd={() => setHovered(null)}
+                onFocus={() => setHovered(i)}
+                onBlur={() => setHovered(null)}
+                data-cursor="View"
+                style={sharedStyle}
+              >
+                {rowContent}
+              </motion.div>
+            )
+          })}
           <div className="divider" />
         </motion.div>
       </div>
