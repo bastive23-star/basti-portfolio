@@ -43,7 +43,7 @@ const projects = [
   { num: '02', title: 'Explainer & Motion Graphics',           color: '#2A1F1A', href: '/projects/motion' },
   { num: '03', title: 'Social',                                color: '#1A1F2A', href: '/projects/social' },
   { num: '04', title: 'AI Production',                         color: '#1A2A1F', href: '/projects/ai-production' },
-  { num: '05', title: 'Zu meinen Fotos',                       color: '#241A1A', href: '/projects/fotografie' },
+  { num: '05', title: 'Fotografie',                             color: '#241A1A', href: '/projects/fotografie' },
 ]
 
 export default function Projects() {

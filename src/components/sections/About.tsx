@@ -187,11 +187,8 @@ export default function About() {
                   Ich bin<br />
                   <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>Basti.</em>
                 </h2>
-                <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '1.2rem' }}>
-                  Ich drehe, schneide, animiere und fotografiere. Alles selbst, alles inhouse — keine langen Abstimmungsketten, kein Outsourcing.
-                </p>
                 <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '2.5rem' }}>
-                  Ich suche gerade eine Festanstellung — am liebsten in einem Team, das wirklich was machen will und jemanden braucht, der viel abdeckt.
+                  In über 11 Jahren Agentur habe ich gelernt, was einen Content Generalist ausmacht: Ich sitze nicht an einer Stelle im Prozess — ich drehe mit schlankem Equipment, fotografiere, schneide, animiere und arbeite mit AI-Workflows. Alles aus einer Hand.
                 </p>
 
                 <div>

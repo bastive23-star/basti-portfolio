@@ -494,11 +494,8 @@ export default function Contact() {
               Klingt das<br />
               <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>interessant?</em>
             </h2>
-            <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.92rem, 1.2vw, 1rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '0.9rem', maxWidth: '36ch' }}>
-              Ich suche gerade eine Festanstellung in München. Content Generalist — Video, Foto, Grafik, Animation, KI. Alles selbst produziert.
-            </p>
             <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.92rem, 1.2vw, 1rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '2.5rem', maxWidth: '36ch' }}>
-              Wenn du denkst, ich passe zu euch — schreib mir.<br />Ich antworte schnell.
+              Schreib mir — und wir klären alles weitere bei einem Cappuccino. Der erste geht auf mich. :)
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -585,7 +582,7 @@ export default function Contact() {
                     onChange={v => { setForm(f => ({ ...f, email: v })); setInvalidFields(f => f.filter(x => x !== 'email')) }} />
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }} style={{ marginBottom: '2rem' }}>
-                  <AnimatedField id="message" label="Was suchst du? *" placeholder="Welche Rolle, welches Team, was du dir vorstellst..."
+                  <AnimatedField id="message" label="Deine Nachricht *" placeholder="Hey Basti, wir suchen genau so jemanden wie dich..."
                     value={form.message} invalid={invalidFields.includes('message')}
                     onChange={v => { setForm(f => ({ ...f, message: v })); setInvalidFields(f => f.filter(x => x !== 'message')) }} rows={4} />
                 </motion.div>

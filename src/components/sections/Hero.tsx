@@ -204,11 +204,55 @@ export default function Hero() {
   const [introVisible,   setIntroVisible]   = useState(true)
   const [contentVisible, setContentVisible] = useState(false)
   const [isMobile,       setIsMobile]       = useState(false)
+  const [easterEgg,      setEasterEgg]      = useState(false)
+  const eCount    = useRef(0)
+  const swipeCount = useRef(0)
+  const lastTouchY = useRef<number | null>(null)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'e' || e.key === 'E') {
+        eCount.current += 1
+        if (eCount.current >= 5) {
+          eCount.current = 0
+          setEasterEgg(true)
+          setTimeout(() => setEasterEgg(false), 3000)
+        }
+      } else {
+        eCount.current = 0
+      }
+    }
+    const onTouchStart = (e: TouchEvent) => { lastTouchY.current = e.touches[0].clientY }
+    const onTouchEnd = (e: TouchEvent) => {
+      if (lastTouchY.current === null) return
+      const dy = lastTouchY.current - e.changedTouches[0].clientY
+      if (dy > 30) {
+        swipeCount.current += 1
+        if (swipeCount.current >= 5) {
+          swipeCount.current = 0
+          setEasterEgg(true)
+          setTimeout(() => setEasterEgg(false), 3000)
+        }
+      } else {
+        swipeCount.current = 0
+      }
+      lastTouchY.current = null
+    }
+
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [])
 
   useEffect(() => {
     const mobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0
     setIsMobile(mobile)
-    if (sessionStorage.getItem('intro-seen') || mobile) {
+    if (sessionStorage.getItem('intro-seen')) {
       setIntroVisible(false)
       setContentVisible(true)
     }
@@ -376,7 +420,7 @@ export default function Hero() {
             transition={d(0.45)}
           >
             <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.88rem,1.2vw,1rem)', color: 'var(--fg-mid)', maxWidth: '38ch', lineHeight: 1.8, fontWeight: 300 }}>
-              Einer, der Video, Foto, Grafik, Animation und KI selbst macht — von der Idee bis zum fertigen File.
+              In Zeiten von KI entscheidet die Bandbreite, wer mit der Geschwindigkeit Schritt hält.
             </p>
             <MagneticLink href="#projects">
               Arbeiten ansehen
@@ -400,6 +444,29 @@ export default function Hero() {
         </motion.div>
       </div>
       </section>
+
+      <AnimatePresence>
+        {easterEgg && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.35, ease: EASE }}
+            style={{
+              position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
+              zIndex: 99999, pointerEvents: 'none',
+              background: 'var(--bg)', border: '1px solid var(--border)',
+              borderRadius: 8, padding: '0.6rem 1.2rem',
+              fontFamily: 'var(--ff-mono)', fontSize: '0.62rem',
+              letterSpacing: '0.1em', color: 'var(--fg-mid)',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+            }}
+          >
+            Wer das liest ist doof 👀
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }

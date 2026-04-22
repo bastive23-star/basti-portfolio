@@ -261,7 +261,7 @@ export function EndCardTile({ fromRow = 0 }: { fromRow?: 0 | 1 }) {
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
         <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.5rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--fg-faint)', margin: 0 }}>Let&apos;s talk</p>
         <h3 style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: 'clamp(1.1rem, 1.6vw, 1.5rem)', color: 'var(--fg)', lineHeight: 1.3, margin: 0 }}>
-          Bei einem Kaffee<br />können wir gerne<br />
+          Der erste<br />Cappuccino<br />
           <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>tiefer eintauchen.</em>
         </h3>
         <MagneticLink href="https://www.linkedin.com/in/sebastian-vitzthum-101154180/">
