@@ -7,7 +7,7 @@ const services = [
   {
     num: '01',
     title: 'Video & Film',
-    desc: 'Imagefilme, Employer Branding, Reels, Eventdokumentation — vom Dreh bis zum fertigen Schnitt, alles aus einer Hand. Kein Briefing-Stille-Post, keine externen Dienstleister. Bei Bedarf auch als Projektleiter — ich kenne beide Seiten des Sets.',
+    desc: 'Imagefilme, Employer Branding, Reels, Eventdokumentation — vom Dreh bis zum fertigen Schnitt, alles aus einer Hand. Kein Briefing-Stille-Post. Bei Bedarf auch als Projektleiter für externe Dienstleister — ich kenne beide Seiten des Sets.',
     tags: ['Dreh', 'Schnitt', 'Imagefilm', 'Reels', 'Eventfilm'],
   },
   {
