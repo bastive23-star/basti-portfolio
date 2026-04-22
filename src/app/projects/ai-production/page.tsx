@@ -16,7 +16,6 @@ const ROW1 = [
   'PH_WCW_AI_Campaign_Father&Daughter_9x16.mp4',
   'PH_Sterilium_2In1Wipes_Story5_Festival_9x16.mp4',
   'cB_ChristmasOffice.mp4',
-  'cB_SwipeAIMix.mp4',
 ].map(f => `${DIR}/${f}`)
 
 // Row 2
@@ -28,6 +27,7 @@ const ROW2 = [
   'cB_NarratorTrend_Zocken.mp4',
   'cB!_OstereierZeitpunktInvestieren_Reel.mp4',
   'cB_AI-Betten_TikTok.mp4',
+  'cB_SwipeAIMix.mp4',
 ].map(f => `${DIR}/${f}`)
 
 const ALL_VIDEOS = [...ROW1, ...ROW2]
@@ -287,7 +287,12 @@ export default function AIProductionPage() {
           {[ROW1, ROW2].map((row, rowIdx) => (
             <div
               key={rowIdx}
-              style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'row', gap: '0.6rem', alignItems: 'stretch' }}
+              style={{
+                flex: 1, minHeight: 0,
+                display: 'flex', flexDirection: 'row',
+                gap: '0.6rem', alignItems: 'stretch',
+                paddingLeft: rowIdx === 1 ? 'clamp(4rem, 8vw, 8rem)' : 0,
+              }}
             >
               {row.map((src, i) => (
                 <motion.div
