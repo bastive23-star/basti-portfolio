@@ -95,8 +95,8 @@ function MagneticLink({ href, children }: { href: string; children: React.ReactN
         letterSpacing: '0.08em', textDecoration: 'none',
         background: 'var(--accent)', color: '#fff',
         padding: '0.8rem 1.4rem', borderRadius: 6,
-        x: sx, y: sy,
-      } as React.CSSProperties}
+      }}
+      x={sx} y={sy}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       whileHover={{ scale: 1.05 }}
