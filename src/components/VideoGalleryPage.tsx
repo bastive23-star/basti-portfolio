@@ -5,6 +5,13 @@ import Link from 'next/link'
 import { EASE } from '@/lib/motion'
 
 // ── Video grid item — loads only on hover ─────────────────────────────────────
+function posterFor(src: string) {
+  const lastSlash = src.lastIndexOf('/')
+  const dir  = src.slice(0, lastSlash)
+  const name = src.slice(lastSlash + 1).replace(/\.mp4$/i, '')
+  return `${dir}/thumbs/${name}.jpg`
+}
+
 function VideoItem({ src, delay, rowIdx, onClick }: {
   src: string; delay: number; rowIdx: number; onClick: () => void
 }) {
@@ -25,6 +32,7 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
       <video
         ref={videoRef}
         src={src}
+        poster={posterFor(src)}
         loop muted playsInline
         preload="none"
         style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
