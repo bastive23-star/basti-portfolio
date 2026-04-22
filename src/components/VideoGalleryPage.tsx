@@ -90,25 +90,24 @@ function EndCard() {
         style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}
       >
         <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.5rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--fg-faint)' }}>
-          Noch mehr
+          Let's talk
         </p>
         <h3 style={{
           fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400,
           fontSize: 'clamp(1.7rem, 2.2vw, 2.2rem)',
           color: 'var(--accent)', lineHeight: 1.25,
         }}>
-          Ich erzähle dir<br />gerne mehr.
+          Bei einem Kaffee<br />können wir gerne<br />tiefer eintauchen.
         </h3>
-        <p style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'var(--fg-mid)', fontWeight: 300, lineHeight: 1.8, maxWidth: '20ch' }}>
-          Hinter jedem Projekt steckt eine Geschichte.
-        </p>
         <Link
-          href="/#contact"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.55rem', fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--fg)', textDecoration: 'none' }}
+          href="https://www.linkedin.com/in/sebastian-vitzthum-101154180/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.55rem', fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textDecoration: 'none', background: 'var(--fg)', color: '#fff', padding: '0.65rem 1.1rem', borderRadius: 4 }}
         >
-          <span>Gespräch anfragen</span>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 12L12 2M12 2H5M12 2v7" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          Slide in my DMs
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 11L11 2M11 2H5M11 2v6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Link>
       </motion.div>

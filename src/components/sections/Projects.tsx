@@ -4,21 +4,47 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePres
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
 
-const FOTO_SLIDES = [
-  '/images/projects/Fotografie/DSCF1079.webp',
-  '/images/projects/Fotografie/AI_AfterHour145.webp',
-  '/images/projects/Fotografie/DSC09727.webp',
-  '/images/projects/Fotografie/DSCF0062.webp',
-  '/images/projects/Fotografie/RS_Mitarbeitershootings_2506-3634.webp',
-  '/images/projects/Fotografie/DSC01010.webp',
+const PROJECT_SLIDES = [
+  [ // 01 Video & Eventfilm
+    '/images/projects/Video/thumbs/Voith_APM_TheFacesBehind_E1_16x9.jpg',
+    '/images/projects/Video/thumbs/Dachser_PI_Start_Oktober_16x9.jpg',
+    '/images/projects/Video/thumbs/BI_KOL_Heimann_Longvideo_16x9_1.jpg',
+    '/images/projects/Video/thumbs/Byte.jpg',
+  ],
+  [ // 02 Motion
+    '/images/projects/Motion/thumbs/DB_DBME24_DigitaleReisebegleitung_16x9.jpg',
+    '/images/projects/Motion/thumbs/TypoAnimation_DigitalTomorrowOutro_16x9.jpg',
+    '/images/projects/Motion/thumbs/HydroPocketTrailer_Part1_16x9_LQ.jpg',
+    '/images/projects/Motion/thumbs/PH_OneWeb_PromoVideo_16x9.jpg',
+  ],
+  [ // 03 Social
+    '/images/projects/Social/thumbs/BI_KOL_Heimann_SocialSnippet6_v2_9x16.jpg',
+    '/images/projects/Social/thumbs/cB_DigitalerEuro_Reel.jpg',
+    '/images/projects/Social/thumbs/BI_JAR_CRM_Focus_4x5.jpg',
+    '/images/projects/Social/thumbs/cB_Kreditkartenlimit_Reel.jpg',
+  ],
+  [ // 04 AI Production
+    '/images/projects/AI_Production/thumbs/Aral-Kaffeestudie_AI_Actionfiguren_9x16.jpg',
+    '/images/projects/AI_Production/thumbs/PH_WCW_AI_Campaign_GirlsGroup_9x16.jpg',
+    '/images/projects/AI_Production/thumbs/PH_Sterilium_HeroVideo_16x9.jpg',
+    '/images/projects/AI_Production/thumbs/cB_ChristmasOffice.jpg',
+  ],
+  [ // 05 Fotografie
+    '/images/projects/Fotografie/DSCF1079.webp',
+    '/images/projects/Fotografie/AI_AfterHour145.webp',
+    '/images/projects/Fotografie/DSC09727.webp',
+    '/images/projects/Fotografie/DSCF0062.webp',
+    '/images/projects/Fotografie/RS_Mitarbeitershootings_2506-3634.webp',
+    '/images/projects/Fotografie/DSC01010.webp',
+  ],
 ]
 
 const projects = [
-  { num: '01', title: 'Employer Branding, Image- & Eventfilm', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '/images/projects/projekt-1.webm', image: '/images/projects/thumbnails/thumb_video.jpg', href: '/projects/video' },
-  { num: '02', title: 'Explainer & Motion Graphics', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '/images/projects/projekt-2.webm', image: '/images/projects/thumbnails/thumb_motion.jpg', href: '/projects/motion' },
-  { num: '03', title: 'Social', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.', video: '', image: '/images/projects/thumbnails/thumb_social.jpg', href: '/projects/social' },
-  { num: '04', title: 'AI Production', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '', image: '/images/projects/thumbnails/thumb_ai.jpg', href: '/projects/ai-production' },
-  { num: '05', title: 'Zu meinen Fotos', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Portraits, Events & mehr.', video: '', image: FOTO_SLIDES[0], href: '/projects/fotografie' },
+  { num: '01', title: 'Employer Branding, Image- & Eventfilm', color: '#1C1C1C', href: '/projects/video' },
+  { num: '02', title: 'Explainer & Motion Graphics',           color: '#2A1F1A', href: '/projects/motion' },
+  { num: '03', title: 'Social',                                color: '#1A1F2A', href: '/projects/social' },
+  { num: '04', title: 'AI Production',                         color: '#1A2A1F', href: '/projects/ai-production' },
+  { num: '05', title: 'Zu meinen Fotos',                       color: '#241A1A', href: '/projects/fotografie' },
 ]
 
 export default function Projects() {
@@ -40,8 +66,11 @@ export default function Projects() {
   const cardY = useSpring(rawY, { stiffness: 90, damping: 18, mass: 1.2 })
 
   useEffect(() => {
-    if (hovered !== 4) { setPhotoIdx(0); return }
-    const id = setInterval(() => setPhotoIdx(i => (i + 1) % FOTO_SLIDES.length), 1600)
+    setPhotoIdx(0)
+    if (hovered === null) return
+    const slides = PROJECT_SLIDES[hovered]
+    if (!slides || slides.length <= 1) return
+    const id = setInterval(() => setPhotoIdx(i => (i + 1) % slides.length), 1600)
     return () => clearInterval(id)
   }, [hovered])
 
@@ -123,61 +152,24 @@ export default function Projects() {
                   overflow: 'hidden', position: 'relative',
                 }}
               >
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={hovered}
-                    initial={{ y: '-60%', opacity: 0 }}
-                    animate={{ y: '0%',   opacity: 1 }}
-                    exit={{    y:  '60%', opacity: 0 }}
-                    transition={{ duration: 0.32, ease: EASE }}
-                    style={{ position: 'absolute', inset: 0 }}
-                  >
-                    {/* WebM preview — fills card when available */}
-                    {hovered !== null && projects[hovered].video ? (
-                      <>
-                        <video
-                          src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${projects[hovered].video}`}
-                          autoPlay loop muted playsInline
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                        />
-                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%)' }} />
-                      </>
-                    ) : hovered !== null && projects[hovered].image ? (
-                      <AnimatePresence mode="sync" initial={false}>
-                        <motion.div
-                          key={photoIdx}
-                          initial={{ opacity: 0, scale: 1.08 }}
-                          animate={{ opacity: 1,  scale: 1.0  }}
-                          exit={{    opacity: 0,  scale: 0.94 }}
-                          transition={{ duration: 0.7, ease: EASE }}
-                          style={{ position: 'absolute', inset: 0 }}
-                        >
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${FOTO_SLIDES[photoIdx]}`}
-                            alt=""
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                          />
-                          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%)' }} />
-                        </motion.div>
-                      </AnimatePresence>
-                    ) : null}
-
-                    {/* Text — always shown, sits on top of video */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      flexDirection: 'column', gap: '0.5rem', padding: '1.2rem',
-                      opacity: hovered !== null && (projects[hovered].video || projects[hovered].image) ? 0 : 1,
-                      transition: 'opacity 0.3s ease',
-                    }}>
-                      <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center' }}>
-                        {hovered !== null ? projects[hovered].category : ''}
-                      </span>
-                      <span style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.52)', fontWeight: 300, textAlign: 'center' }}>
-                        {hovered !== null ? projects[hovered].desc : ''}
-                      </span>
-                    </div>
-                  </motion.div>
+                <AnimatePresence mode="sync" initial={false}>
+                  {hovered !== null && PROJECT_SLIDES[hovered] && (
+                    <motion.div
+                      key={photoIdx}
+                      initial={{ opacity: 0, scale: 1.08 }}
+                      animate={{ opacity: 1,  scale: 1.0  }}
+                      exit={{    opacity: 0,  scale: 0.94 }}
+                      transition={{ duration: 0.65, ease: EASE }}
+                      style={{ position: 'absolute', inset: 0 }}
+                    >
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${PROJECT_SLIDES[hovered][photoIdx]}`}
+                        alt=""
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
+                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%)' }} />
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </motion.div>
             </motion.div>
@@ -224,8 +216,7 @@ export default function Projects() {
               padding: 'clamp(1.2rem,3vh,1.9rem) 0',
               borderTop: '1px solid var(--border)',
               transition: 'opacity 0.25s ease',
-              // href rows are real links — never dim them
-              opacity: href ? 1 : (hovered !== null && hovered !== i ? 0.25 : 1),
+              opacity: hovered !== null && hovered !== i ? 0.25 : 1,
               textDecoration: 'none',
               color: 'inherit',
             }
