@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
 
@@ -68,6 +68,45 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
   )
 }
 
+// ── Magnetic link button ──────────────────────────────────────────────────────
+function MagneticLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const ref = useRef<HTMLAnchorElement>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const sx = useSpring(x, { stiffness: 280, damping: 18 })
+  const sy = useSpring(y, { stiffness: 280, damping: 18 })
+
+  const onMove = (e: React.MouseEvent) => {
+    const r = ref.current?.getBoundingClientRect()
+    if (!r) return
+    x.set((e.clientX - (r.left + r.width  / 2)) * 0.38)
+    y.set((e.clientY - (r.top  + r.height / 2)) * 0.38)
+  }
+  const onLeave = () => { x.set(0); y.set(0) }
+
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      target="_blank" rel="noopener noreferrer"
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+        fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 600,
+        letterSpacing: '0.08em', textDecoration: 'none',
+        background: 'var(--accent)', color: '#fff',
+        padding: '0.8rem 1.4rem', borderRadius: 6,
+        x: sx, y: sy,
+      } as React.CSSProperties}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      whileHover={{ scale: 1.05 }}
+      transition={{ scale: { duration: 0.2 } }}
+    >
+      {children}
+    </motion.a>
+  )
+}
+
 // ── End card ─────────────────────────────────────────────────────────────────
 function EndCard() {
   return (
@@ -100,23 +139,12 @@ function EndCard() {
           Bei einem Kaffee<br />können wir gerne<br />
           <em style={{ color: 'var(--accent)' }}>tiefer eintauchen.</em>
         </h3>
-        <Link
-          href="https://www.linkedin.com/in/sebastian-vitzthum-101154180/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-            fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 600,
-            letterSpacing: '0.08em', textDecoration: 'none',
-            background: 'var(--accent)', color: '#fff',
-            padding: '0.8rem 1.4rem', borderRadius: 6,
-          }}
-        >
+        <MagneticLink href="https://www.linkedin.com/in/sebastian-vitzthum-101154180/">
           Slide in my DMs
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-        </Link>
+        </MagneticLink>
       </motion.div>
     </div>
   )
