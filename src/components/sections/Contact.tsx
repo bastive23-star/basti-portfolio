@@ -432,6 +432,7 @@ function SliderVerify({ onComplete, validate, sending, error }: {
 export default function Contact() {
   const [sent, setSent] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const elliEgg = form.message.toLowerCase().includes('elli')
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
   const titleY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
@@ -581,10 +582,27 @@ export default function Contact() {
                     value={form.email} invalid={invalidFields.includes('email')}
                     onChange={v => { setForm(f => ({ ...f, email: v })); setInvalidFields(f => f.filter(x => x !== 'email')) }} />
                 </motion.div>
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }} style={{ marginBottom: '2rem' }}>
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }} style={{ marginBottom: '2rem', position: 'relative' }}>
                   <AnimatedField id="message" label="Deine Nachricht *" placeholder="Hey Basti, wir suchen genau so jemanden wie dich..."
                     value={form.message} invalid={invalidFields.includes('message')}
                     onChange={v => { setForm(f => ({ ...f, message: v })); setInvalidFields(f => f.filter(x => x !== 'message')) }} rows={4} />
+                  <AnimatePresence>
+                    {elliEgg && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.7, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.7, y: 10 }}
+                        transition={{ duration: 0.4, ease: EASE }}
+                        style={{ position: 'absolute', bottom: '100%', right: 0, marginBottom: '0.75rem', zIndex: 20 }}
+                      >
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/Elli.png`}
+                          alt="Elli"
+                          style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: '50%', boxShadow: '0 8px 32px rgba(0,0,0,0.18)', border: '2px solid var(--border)' }}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
 
                 <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', color: 'var(--fg-faint)', lineHeight: 1.7, marginBottom: '1.8rem' }}>
