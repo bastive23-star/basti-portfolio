@@ -187,7 +187,7 @@ export default function Projects() {
           </motion.div>
 
           {/* Project rows */}
-          {projects.map(({ num, title, category, year, href }, i) => {
+          {projects.map(({ num, title, category, href }, i) => {
             const rowContent = (
               <>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem' }}>
@@ -230,7 +230,6 @@ export default function Projects() {
                   >
                     {category}
                   </span>
-                  <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{year}</span>
                   <motion.div
                     animate={{ x: hovered === i ? 4 : 0, opacity: hovered === i ? 1 : 0.3 }}
                     transition={{ duration: 0.25 }}
