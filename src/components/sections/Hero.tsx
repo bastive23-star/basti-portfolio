@@ -206,8 +206,7 @@ export default function Hero() {
   const [isMobile,       setIsMobile]       = useState(false)
   const [easterEgg,      setEasterEgg]      = useState(false)
   const eCount    = useRef(0)
-  const swipeCount = useRef(0)
-  const lastTouchY = useRef<number | null>(null)
+  const videoTapCount = useRef(0)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -222,31 +221,8 @@ export default function Hero() {
         eCount.current = 0
       }
     }
-    const onTouchStart = (e: TouchEvent) => { lastTouchY.current = e.touches[0].clientY }
-    const onTouchEnd = (e: TouchEvent) => {
-      if (lastTouchY.current === null) return
-      const dy = lastTouchY.current - e.changedTouches[0].clientY
-      if (dy > 30) {
-        swipeCount.current += 1
-        if (swipeCount.current >= 5) {
-          swipeCount.current = 0
-          setEasterEgg(true)
-          setTimeout(() => setEasterEgg(false), 3000)
-        }
-      } else {
-        swipeCount.current = 0
-      }
-      lastTouchY.current = null
-    }
-
     window.addEventListener('keydown', onKey)
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchend', onTouchEnd, { passive: true })
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchend', onTouchEnd)
-    }
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
   useEffect(() => {
@@ -341,6 +317,22 @@ export default function Hero() {
             ref={videoRef}
             src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`}
             muted playsInline preload="auto"
+            onTouchEnd={() => {
+              videoTapCount.current += 1
+              if (videoTapCount.current >= 5) {
+                videoTapCount.current = 0
+                setEasterEgg(true)
+                setTimeout(() => setEasterEgg(false), 3000)
+              }
+            }}
+            onClick={() => {
+              videoTapCount.current += 1
+              if (videoTapCount.current >= 5) {
+                videoTapCount.current = 0
+                setEasterEgg(true)
+                setTimeout(() => setEasterEgg(false), 3000)
+              }
+            }}
             autoPlay={isMobile} loop={isMobile}
             aria-hidden
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
