@@ -18,6 +18,7 @@ const ROW2 = [
   'VoithSedimentCare_Short.mp4',
   'Voith_APM_MillOneTrailer_16x9.mp4',
   'Voith_APM_NameReveal_16x9.mp4',
+  'TypoAnimation_DigitalTomorrowOutro_16x9.mp4',
 ].map(v)
 
 export default function MotionPage() {

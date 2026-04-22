@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
 
-// ── Video grid item — loads only on hover ─────────────────────────────────────
-function posterFor(src: string) {
+// ── Video grid item — img thumbnail always visible, video fades in on hover ───
+function thumbFor(src: string) {
   const lastSlash = src.lastIndexOf('/')
   const dir  = src.slice(0, lastSlash)
   const name = src.slice(lastSlash + 1).replace(/\.mp4$/i, '')
@@ -15,7 +15,7 @@ function posterFor(src: string) {
 function VideoItem({ src, delay, rowIdx, onClick }: {
   src: string; delay: number; rowIdx: number; onClick: () => void
 }) {
-  const videoRef  = useRef<HTMLVideoElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [playing, setPlaying] = useState(false)
 
   return (
@@ -27,15 +27,26 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
       onHoverStart={() => { videoRef.current?.play().catch(() => {}); setPlaying(true) }}
       onHoverEnd={() => { videoRef.current?.pause(); if (videoRef.current) videoRef.current.currentTime = 0; setPlaying(false) }}
       data-cursor="Play"
-      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', background: '#161614', cursor: 'none', position: 'relative' }}
+      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
     >
+      {/* Thumbnail — always visible, sets the item width */}
+      <img
+        src={thumbFor(src)}
+        alt=""
+        style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
+      />
+      {/* Video — loads on hover, fades over the thumbnail */}
       <video
         ref={videoRef}
         src={src}
-        poster={posterFor(src)}
         loop muted playsInline
         preload="none"
-        style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
+        style={{
+          position: 'absolute', inset: 0,
+          height: '100%', width: '100%', objectFit: 'cover',
+          display: 'block', userSelect: 'none', pointerEvents: 'none',
+          opacity: playing ? 1 : 0, transition: 'opacity 0.3s ease',
+        } as React.CSSProperties}
       />
       {/* Play icon — fades out while playing */}
       <div style={{
@@ -44,7 +55,7 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
       }}>
         <div style={{
           width: 38, height: 38, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+          background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
           border: '1px solid rgba(255,255,255,0.16)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
@@ -62,54 +73,42 @@ function EndCard() {
   return (
     <div style={{
       flexShrink: 0,
-      width: 'clamp(240px, 22vw, 310px)',
-      height: '100%',
+      alignSelf: 'stretch',
+      width: 'clamp(220px, 20vw, 290px)',
       display: 'flex',
-      alignItems: 'center',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      gap: '1.4rem',
       paddingLeft: 'clamp(2.5rem, 4vw, 4rem)',
-      paddingRight: 'clamp(1.5rem, 3vw, 3rem)',
+      paddingRight: 'clamp(2rem, 3vw, 3rem)',
       borderLeft: '1px solid var(--border)',
     }}>
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
+        initial={{ opacity: 0, x: 24 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, ease: EASE, delay: 0.3 }}
+        transition={{ duration: 0.7, ease: EASE, delay: 0.4 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}
       >
-        <p style={{
-          fontFamily: 'var(--ff-mono)', fontSize: '0.52rem',
-          letterSpacing: '0.22em', textTransform: 'uppercase',
-          color: 'var(--fg-faint)', marginBottom: '1.6rem',
-        }}>
-          Mehr erfahren
+        <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.5rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--fg-faint)' }}>
+          Noch mehr
         </p>
         <h3 style={{
           fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400,
-          fontSize: 'clamp(1.8rem, 2.6vw, 2.5rem)',
-          color: 'var(--accent)', lineHeight: 1.2, marginBottom: '1.2rem',
+          fontSize: 'clamp(1.7rem, 2.2vw, 2.2rem)',
+          color: 'var(--accent)', lineHeight: 1.25,
         }}>
           Ich erzähle dir<br />gerne mehr.
         </h3>
-        <p style={{
-          fontFamily: 'var(--ff-body)', fontSize: '0.82rem',
-          color: 'var(--fg-mid)', fontWeight: 300,
-          lineHeight: 1.85, marginBottom: '2.2rem', maxWidth: '22ch',
-        }}>
-          Hinter jedem Projekt steckt eine Geschichte — lass uns persönlich darüber sprechen.
+        <p style={{ fontFamily: 'var(--ff-body)', fontSize: '0.78rem', color: 'var(--fg-mid)', fontWeight: 300, lineHeight: 1.8, maxWidth: '20ch' }}>
+          Hinter jedem Projekt steckt eine Geschichte.
         </p>
         <Link
           href="/#contact"
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
-            fontFamily: 'var(--ff-mono)', fontSize: '0.58rem',
-            letterSpacing: '0.16em', textTransform: 'uppercase',
-            color: 'var(--fg)', textDecoration: 'none',
-          }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.55rem', fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--fg)', textDecoration: 'none' }}
         >
-          <span style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.25rem' }}>
-            Gespräch anfragen
-          </span>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M1 9L9 1M9 1H3M9 1v6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          <span>Gespräch anfragen</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 12L12 2M12 2H5M12 2v7" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Link>
       </motion.div>
@@ -315,17 +314,17 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
         <div
           ref={trackRef}
           style={{
-            flex: 1, minHeight: 0,
+            flex: 1, minHeight: 0, height: 0,
             overflowX: 'auto', overflowY: 'hidden',
+            display: 'flex', flexDirection: 'row', alignItems: 'stretch',
             WebkitOverflowScrolling: 'touch',
             msOverflowStyle: 'none', scrollbarWidth: 'none',
+            paddingLeft: 'clamp(1rem, 3vw, 2.5rem)',
           }}
         >
           <style>{`::-webkit-scrollbar { display: none }`}</style>
-          {/* Inner row: video columns + end card */}
-          <div style={{ display: 'flex', flexDirection: 'row', height: '100%', paddingLeft: 'clamp(1rem, 3vw, 2.5rem)' }}>
-            {/* Two video rows stacked */}
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '0.6rem', padding: '0.75rem 0' }}>
+          {/* Two video rows stacked */}
+          <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: '0.75rem 0' }}>
               {[row1, row2].map((row, rowIdx) => (
                 <div
                   key={rowIdx}
@@ -341,9 +340,8 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
                 </div>
               ))}
             </div>
-            {/* End card */}
-            <EndCard />
-          </div>
+          {/* End card — sibling to the rows column, aligned via parent's alignItems: stretch */}
+          <EndCard />
         </div>
 
         {/* Progress bar */}

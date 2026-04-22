@@ -17,7 +17,7 @@ const projects = [
   { num: '01', title: 'Employer Branding, Image- & Eventfilm', category: 'Video & Film', year: '2025', color: '#1C1C1C', desc: 'Unternehmensfilm von A bis Z.', video: '/images/projects/projekt-1.webm', image: '/images/projects/thumbnails/thumb_video.jpg', href: '/projects/video' },
   { num: '02', title: 'Explainer & Motion Graphics', category: 'Animation', year: '2025', color: '#2A1F1A', desc: 'Logoanimation & Motion-Set.', video: '/images/projects/projekt-2.webm', image: '/images/projects/thumbnails/thumb_motion.jpg', href: '/projects/motion' },
   { num: '03', title: 'Social', category: 'Social Media', year: '2024', color: '#1A1F2A', desc: 'Content-Strategie & Produktion.', video: '', image: '/images/projects/thumbnails/thumb_social.jpg', href: '/projects/social' },
-  { num: '04', title: 'AI Production', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '', image: '', href: '/projects/ai-production' },
+  { num: '04', title: 'AI Production', category: 'AI-Produktion', year: '2024', color: '#1A2A1F', desc: 'Synthetische Bildwelt für eine Kampagne.', video: '', image: '/images/projects/thumbnails/thumb_ai.jpg', href: '/projects/ai-production' },
   { num: '05', title: 'Zu meinen Fotos', category: 'Foto & Video', year: '2024', color: '#241A1A', desc: 'Portraits, Events & mehr.', video: '', image: FOTO_SLIDES[0], href: '/projects/fotografie' },
 ]
 
