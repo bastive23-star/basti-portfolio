@@ -445,17 +445,21 @@ export default function Hero() {
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.35, ease: EASE }}
             style={{
-              position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
+              position: 'fixed', bottom: '2rem', left: 0, right: 0,
               zIndex: 99999, pointerEvents: 'none',
-              background: 'var(--bg)', border: '1px solid var(--border)',
-              borderRadius: 8, padding: '0.6rem 1.2rem',
-              fontFamily: 'var(--ff-mono)', fontSize: '0.62rem',
-              letterSpacing: '0.1em', color: 'var(--fg-mid)',
-              whiteSpace: 'nowrap',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+              display: 'flex', justifyContent: 'center',
             }}
           >
-            Wer das liest ist doof 👀
+            <div style={{
+              background: 'var(--bg)', border: '1px solid var(--border)',
+              borderRadius: 8, padding: '0.6rem 1.2rem',
+              fontFamily: 'var(--ff-mono)', fontSize: '1.1rem',
+              letterSpacing: '0.06em', color: 'var(--fg-mid)',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+            }}>
+              Wer das liest ist doof 👀
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
