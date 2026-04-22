@@ -51,6 +51,7 @@ export default function Projects() {
   const [photoIdx, setPhotoIdx] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const sectionRef   = useRef<HTMLElement>(null)
+  const rectCache    = useRef<DOMRect | null>(null)
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
   const headerY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
@@ -73,11 +74,21 @@ export default function Projects() {
     return () => clearInterval(id)
   }, [hovered])
 
+  useEffect(() => {
+    const invalidate = () => { rectCache.current = null }
+    window.addEventListener('scroll', invalidate, { passive: true })
+    window.addEventListener('resize', invalidate)
+    return () => {
+      window.removeEventListener('scroll', invalidate)
+      window.removeEventListener('resize', invalidate)
+    }
+  }, [])
+
   const onMouseMove = (e: React.MouseEvent) => {
-    const rect = containerRef.current?.getBoundingClientRect()
-    if (rect) {
-      rawX.set(e.clientX - rect.left)
-      rawY.set(e.clientY - rect.top)
+    if (!rectCache.current) rectCache.current = containerRef.current?.getBoundingClientRect() ?? null
+    if (rectCache.current) {
+      rawX.set(e.clientX - rectCache.current.left)
+      rawY.set(e.clientY - rectCache.current.top)
     }
   }
 

@@ -19,16 +19,6 @@ function ParallaxPhotos() {
     // No mouse on touch devices — skip the rAF loop entirely
     if (navigator.maxTouchPoints > 0) return
 
-    const onMove = (e: MouseEvent) => {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect) return
-      const dx = (e.clientX - rect.left  - rect.width  / 2) / rect.width
-      const dy = (e.clientY - rect.top   - rect.height / 2) / rect.height
-      target1.current = { x: dx * 18,  y: dy * 12  }
-      target2.current = { x: dx * -10, y: dy * -8  }
-    }
-    window.addEventListener('mousemove', onMove)
-
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t
     const tick = () => {
       current1.current.x = lerp(current1.current.x, target1.current.x, 0.06)
@@ -37,9 +27,29 @@ function ParallaxPhotos() {
       current2.current.y = lerp(current2.current.y, target2.current.y, 0.04)
       if (img1Ref.current) img1Ref.current.style.transform = `translate(${current1.current.x}px, ${current1.current.y}px)`
       if (img2Ref.current) img2Ref.current.style.transform = `translate(${current2.current.x}px, ${current2.current.y}px)`
-      raf.current = requestAnimationFrame(tick)
+      const settled =
+        Math.abs(target1.current.x - current1.current.x) < 0.05 &&
+        Math.abs(target1.current.y - current1.current.y) < 0.05 &&
+        Math.abs(target2.current.x - current2.current.x) < 0.05 &&
+        Math.abs(target2.current.y - current2.current.y) < 0.05
+      if (!settled) {
+        raf.current = requestAnimationFrame(tick)
+      } else {
+        raf.current = 0
+      }
     }
-    tick()
+
+    const onMove = (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (!rect) return
+      const dx = (e.clientX - rect.left  - rect.width  / 2) / rect.width
+      const dy = (e.clientY - rect.top   - rect.height / 2) / rect.height
+      target1.current = { x: dx * 18,  y: dy * 12  }
+      target2.current = { x: dx * -10, y: dy * -8  }
+      if (!raf.current) raf.current = requestAnimationFrame(tick)
+    }
+    window.addEventListener('mousemove', onMove)
+
     return () => {
       window.removeEventListener('mousemove', onMove)
       cancelAnimationFrame(raf.current)
@@ -71,7 +81,7 @@ function ParallaxPhotos() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: EASE, delay: 0.1 }}
         >
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/portrait-1.jpg`} alt="Sebastian" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
+          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/portrait-1.jpg`} alt="Sebastian" loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
         </motion.div>
       </motion.div>
 
@@ -89,7 +99,7 @@ function ParallaxPhotos() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: EASE, delay: 0.25 }}
         >
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/portrait-2.jpg`} alt="Sebastian lachend" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
+          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/portrait-2.jpg`} alt="Sebastian lachend" loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
         </motion.div>
 
         {/* Available badge */}

@@ -21,6 +21,8 @@ export default function Cursor() {
       if (dotRef.current) {
         dotRef.current.style.transform = `translate(${mx}px, ${my}px)`
       }
+      // Restart ring loop if it had settled
+      if (!raf) raf = requestAnimationFrame(tick)
     }
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t
@@ -30,9 +32,13 @@ export default function Cursor() {
       if (ringRef.current) {
         ringRef.current.style.transform = `translate(${rx}px, ${ry}px)`
       }
-      raf = requestAnimationFrame(tick)
+      // Stop looping once ring has caught up — restart on next mousemove
+      if (Math.abs(mx - rx) > 0.1 || Math.abs(my - ry) > 0.1) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        raf = 0
+      }
     }
-    tick()
 
     const onOver = (e: MouseEvent) => {
       const el = (e.target as HTMLElement)
