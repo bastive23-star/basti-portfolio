@@ -138,9 +138,9 @@ function Marquee() {
 }
 
 const stats = [
-  { num: '10+',  label: 'Jahre Content-Erfahrung' },
-  { num: '100+', label: 'Projekte umgesetzt' },
-  { num: '5+',   label: 'Skills, eine Person' },
+  { num: '11+',  label: 'Agentur Erfahrung' },
+  { num: '200+', label: 'Projekte umgesetzt' },
+  { num: '5+',   label: 'Handwerke aus einer Hand' },
 ]
 
 // ── Main ──────────────────────────────────────────────────────────────────────
