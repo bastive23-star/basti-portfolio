@@ -308,34 +308,34 @@ export default function Hero() {
         {/* Background video */}
         <motion.div
           className="hero-video"
-          style={{ position: 'absolute', inset: '-10%', y: videoY, scale: videoScale, opacity: videoOpacity, zIndex: 0 }}
+          style={{ position: 'absolute', inset: '-10%', y: videoY, scale: videoScale, opacity: videoOpacity, zIndex: 0, cursor: 'default' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 1.8, ease: 'easeOut' }}
+          onClick={() => {
+            videoTapCount.current += 1
+            if (videoTapCount.current >= 5) {
+              videoTapCount.current = 0
+              setEasterEgg(true)
+              setTimeout(() => setEasterEgg(false), 3000)
+            }
+          }}
+          onTouchEnd={() => {
+            videoTapCount.current += 1
+            if (videoTapCount.current >= 5) {
+              videoTapCount.current = 0
+              setEasterEgg(true)
+              setTimeout(() => setEasterEgg(false), 3000)
+            }
+          }}
         >
           <video
             ref={videoRef}
             src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/hero-bg.mp4`}
             muted playsInline preload="auto"
-            onTouchEnd={() => {
-              videoTapCount.current += 1
-              if (videoTapCount.current >= 5) {
-                videoTapCount.current = 0
-                setEasterEgg(true)
-                setTimeout(() => setEasterEgg(false), 3000)
-              }
-            }}
-            onClick={() => {
-              videoTapCount.current += 1
-              if (videoTapCount.current >= 5) {
-                videoTapCount.current = 0
-                setEasterEgg(true)
-                setTimeout(() => setEasterEgg(false), 3000)
-              }
-            }}
             autoPlay={isMobile} loop={isMobile}
             aria-hidden
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
           />
           <div style={{
             position: 'absolute', inset: 0,
