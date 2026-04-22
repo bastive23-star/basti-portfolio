@@ -274,7 +274,7 @@ export default function Projects() {
                 key={i}
                 role="button"
                 tabIndex={0}
-                aria-label={`${title} — ${category}, ${year}`}
+                aria-label={`${title} — ${category}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
