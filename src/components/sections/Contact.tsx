@@ -593,12 +593,12 @@ export default function Contact() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.7, y: 10 }}
                         transition={{ duration: 0.4, ease: EASE }}
-                        style={{ position: 'absolute', bottom: '100%', right: 0, marginBottom: '0.75rem', zIndex: 20 }}
+                        style={{ position: 'absolute', bottom: 0, right: 0, zIndex: 20 }}
                       >
                         <img
                           src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/Elli.png`}
                           alt="Elli"
-                          style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: '50%', boxShadow: '0 8px 32px rgba(0,0,0,0.18)', border: '2px solid var(--border)' }}
+                          style={{ width: 100, height: 'auto', display: 'block' }}
                         />
                       </motion.div>
                     )}
