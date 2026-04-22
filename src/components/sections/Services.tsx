@@ -7,31 +7,31 @@ const services = [
   {
     num: '01',
     title: 'Video & Film',
-    desc: 'Imagefilme, Reels, Eventdokumentation — komplett inhouse, kein Briefing-Stille-Post. Von der ersten Idee bis zum exportfertigen File. Ich drehe, dirigiere und schneide selbst.',
+    desc: 'Imagefilme, Employer Branding, Reels, Eventdokumentation — vom Dreh bis zum fertigen Schnitt, alles aus einer Hand. Kein Briefing-Stille-Post, keine externen Dienstleister.',
     tags: ['Dreh', 'Schnitt', 'Imagefilm', 'Reels', 'Eventfilm'],
   },
   {
     num: '02',
     title: 'Animation & Motion',
-    desc: 'Logo-Animationen, Intro-Sequenzen, Erklärvideos — alles was sich bewegt und dabei nicht billig aussieht. Motion, der für die Marke spricht.',
+    desc: 'After Effects ist mein tägliches Werkzeug. Erklärvideos, Animationen, Intros — was auch immer gebraucht wird.',
     tags: ['After Effects', 'Motion Graphics', 'Logoanimation', 'Explainer'],
   },
   {
     num: '03',
     title: 'Foto & Grafik',
-    desc: 'Produkt-, Portrait- und Eventfotografie. CI-Materialien, Key Visuals, Print — alles was eine Marke zusammenhält, visuell auf den Punkt gebracht.',
+    desc: 'Portrait, Event, Produkt — plus alles was Photoshop, Canva und Figma so hergeben: Flyer, Key Visuals, statische Assets.',
     tags: ['Fotografie', 'Grafikdesign', 'CI', 'Key Visuals', 'Print'],
   },
   {
     num: '04',
     title: 'AI-Produktionen',
-    desc: 'Synthetische Bildwelten, KI-Avatare, Voice-Over, generierter B-Roll. Nicht als Gimmick — als echtes Produktionswerkzeug, das Budgets spart und Möglichkeiten erweitert.',
+    desc: 'Flux, Kling, Runway, ElevenLabs, Nano Banana — KI als echtes Produktionswerkzeug. Synthetische Bilder, Voice-Over, generierter B-Roll — bis hin zu ganzen Kampagnen.',
     tags: ['Midjourney', 'Sora', 'ElevenLabs', 'Runway', 'ComfyUI'],
   },
   {
     num: '05',
     title: 'Social Media',
-    desc: 'Content produzieren und veröffentlichen — Reels, Stories, Posts, Thumbnails. Kein leeres Posting, sondern Bild und Ton, die wirklich performen.',
+    desc: 'Von der Produktion bis zur fertigen Datei — Reels, Stories, Posts, Thumbnails für Instagram, TikTok, LinkedIn und YouTube.',
     tags: ['Instagram', 'TikTok', 'LinkedIn', 'YouTube', 'Reels'],
   },
 ]
@@ -77,7 +77,7 @@ export default function Services() {
 
         <motion.div style={{ y: headerY, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'clamp(3rem, 6vh, 5rem)', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <RevealText delay={0}><p className="tag" style={{ marginBottom: '0.8rem' }}>Was ich mache</p></RevealText>
+            <RevealText delay={0}><p className="tag" style={{ marginBottom: '0.8rem' }}>Skills</p></RevealText>
             <RevealText delay={0.1}><h2 style={{ fontSize: 'clamp(2.6rem, 5.5vw, 5rem)' }}>Alles aus<br /><em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>einer Hand.</em></h2></RevealText>
           </div>
           <motion.span className="tag" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
