@@ -30,7 +30,6 @@ const PROJECT_SLIDES = [
     '/images/projects/AI_Production/thumbs/cB_ChristmasOffice.jpg',
   ],
   [ // 05 Fotografie
-    '/images/projects/Fotografie/DSCF1079.webp',
     '/images/projects/Fotografie/AI_AfterHour145.webp',
     '/images/projects/Fotografie/DSC09727.webp',
     '/images/projects/Fotografie/DSCF0062.webp',

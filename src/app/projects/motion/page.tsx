@@ -22,5 +22,5 @@ const ROW2 = [
 ].map(v)
 
 export default function MotionPage() {
-  return <VideoGalleryPage titleMain="Explainer &" titleAccent=" Motion" row1={ROW1} row2={ROW2} />
+  return <VideoGalleryPage titleMain="Explainer &" titleAccent=" Motion" row1={ROW1} row2={ROW2} endCardRow={1} />
 }

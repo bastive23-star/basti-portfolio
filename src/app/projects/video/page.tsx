@@ -16,8 +16,9 @@ const ROW2 = [
   'Byte.mp4',
   'Voith_AfterMarket_W.Hamburger_MainPiece_16x9_DE.mp4',
   'raysonoXdachser_DigitalesTooling_16x9.mp4',
+  'PollmeierComponents_HQ.mp4',
 ].map(v)
 
 export default function VideoPage() {
-  return <VideoGalleryPage titleMain="Image &" titleAccent=" Eventfilm" row1={ROW1} row2={ROW2} />
+  return <VideoGalleryPage titleMain="Image &" titleAccent=" Eventfilm" row1={ROW1} row2={ROW2} endCardRow={1} />
 }

@@ -4,7 +4,9 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motio
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
 
-// ── Video grid item — img thumbnail always visible, video fades in on hover ───
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const isVideo = (src: string) => /\.(mp4|webm|mov)$/i.test(src)
+
 function thumbFor(src: string) {
   const lastSlash = src.lastIndexOf('/')
   const dir  = src.slice(0, lastSlash)
@@ -29,13 +31,11 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
       data-cursor="Play"
       style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
     >
-      {/* Thumbnail — always visible, sets the item width */}
       <img
         src={thumbFor(src)}
         alt=""
         style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
       />
-      {/* Video — loads on hover, fades over the thumbnail */}
       <video
         ref={videoRef}
         src={src}
@@ -48,7 +48,6 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
           opacity: playing ? 1 : 0, transition: 'opacity 0.3s ease',
         } as React.CSSProperties}
       />
-      {/* Play icon — fades out while playing */}
       <div style={{
         position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
         opacity: playing ? 0 : 1, transition: 'opacity 0.3s ease', pointerEvents: 'none',
@@ -68,85 +67,209 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
   )
 }
 
-// ── Magnetic link button ──────────────────────────────────────────────────────
-function MagneticLink({ href, children }: { href: string; children: React.ReactNode }) {
+function ImageItem({ src, delay, rowIdx, onClick }: {
+  src: string; delay: number; rowIdx: number; onClick: () => void
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: rowIdx === 0 ? -12 : 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: EASE, delay }}
+      onClick={onClick}
+      data-cursor="View"
+      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
+    >
+      <img src={src} alt=""
+        style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
+      />
+    </motion.div>
+  )
+}
+
+function CarouselItem({ pages, delay, rowIdx, onClick }: {
+  pages: string[]; delay: number; rowIdx: number; onClick: () => void
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: rowIdx === 0 ? -12 : 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: EASE, delay }}
+      onClick={onClick}
+      data-cursor="View"
+      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
+    >
+      <img src={pages[0]} alt=""
+        style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
+      />
+      <div style={{
+        position: 'absolute', top: 8, right: 8,
+        background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+        borderRadius: 4, padding: '3px 7px',
+        display: 'flex', alignItems: 'center', gap: 5,
+        color: '#fff', fontFamily: 'var(--ff-mono)', fontSize: '0.5rem', letterSpacing: '0.12em',
+        pointerEvents: 'none',
+      }}>
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <rect x="1" y="3" width="7" height="7" rx="1.2" stroke="currentColor" strokeWidth="1.1"/>
+          <rect x="3" y="1" width="7" height="7" rx="1.2" stroke="currentColor" strokeWidth="1.1" strokeDasharray="2 1.5"/>
+        </svg>
+        {pages.length}
+      </div>
+    </motion.div>
+  )
+}
+
+// ── Carousel lightbox ─────────────────────────────────────────────────────────
+function CarouselLightbox({ pages, onClose }: { pages: string[]; onClose: () => void }) {
+  const [idx, setIdx] = useState(0)
+  const touchStart = useRef<number | null>(null)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape')     onClose()
+      if (e.key === 'ArrowRight') setIdx(i => (i + 1) % pages.length)
+      if (e.key === 'ArrowLeft')  setIdx(i => (i - 1 + pages.length) % pages.length)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) }
+  }, [onClose, pages.length])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: EASE }}
+      onClick={onClose}
+      onTouchStart={e => { touchStart.current = e.touches[0].clientX }}
+      onTouchEnd={e => {
+        if (touchStart.current === null) return
+        const dx = e.changedTouches[0].clientX - touchStart.current
+        if (dx > 50) setIdx(i => (i - 1 + pages.length) % pages.length)
+        if (dx < -50) setIdx(i => (i + 1) % pages.length)
+        touchStart.current = null
+      }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'default' }}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.img
+          key={idx} src={pages[idx]} alt=""
+          onClick={e => e.stopPropagation()}
+          initial={{ opacity: 0, scale: 0.88, filter: 'blur(12px)' }}
+          animate={{ opacity: 1, scale: 1,    filter: 'blur(0px)' }}
+          exit={{    opacity: 0, scale: 1.06, filter: 'blur(8px)' }}
+          transition={{ duration: 0.45, ease: EASE }}
+          style={{ position: 'relative', zIndex: 1, maxWidth: 'min(88vw, 1100px)', maxHeight: '86dvh', width: 'auto', height: 'auto', borderRadius: 8, boxShadow: '0 48px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)', display: 'block' } as React.CSSProperties}
+        />
+      </AnimatePresence>
+
+      <motion.button onClick={e => { e.stopPropagation(); setIdx(i => (i - 1 + pages.length) % pages.length) }}
+        initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+        whileHover={{ x: -3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
+        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 3L6 10l7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </motion.button>
+
+      <motion.button onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % pages.length) }}
+        initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+        whileHover={{ x: 3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
+        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 3l7 7-7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </motion.button>
+
+      <motion.button onClick={e => { e.stopPropagation(); onClose() }}
+        initial={{ opacity: 0, rotate: -45 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0 }}
+        whileHover={{ rotate: 90, color: '#fff' }} transition={{ duration: 0.3, ease: EASE }}
+        style={{ position: 'fixed', top: 'clamp(1.2rem,3vh,2rem)', right: 'clamp(1.2rem,3vw,2.5rem)', zIndex: 2, background: 'none', border: 'none', padding: '0.8rem', color: 'rgba(255,255,255,0.5)', cursor: 'default' }}
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2l14 14M16 2L2 16" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+      </motion.button>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+        transition={{ duration: 0.3, ease: EASE }}
+        style={{ position: 'fixed', bottom: 'clamp(1.4rem,3vh,2.4rem)', left: 0, right: 0, zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', pointerEvents: 'none' }}
+      >
+        <div style={{ display: 'flex', gap: 5 }}>
+          {pages.map((_, i) => (
+            <motion.button key={i} onClick={e => { e.stopPropagation(); setIdx(i) }}
+              style={{ pointerEvents: 'auto', background: 'none', border: 'none', padding: '4px', cursor: 'default' }}
+            >
+              <motion.div
+                animate={{ width: i === idx ? 16 : 5, background: i === idx ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)' }}
+                style={{ height: 5, borderRadius: 99 }} transition={{ duration: 0.25 }}
+              />
+            </motion.button>
+          ))}
+        </div>
+        <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.52rem', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)' }}>
+          {String(idx + 1).padStart(2, '0')}&thinsp;/&thinsp;{String(pages.length).padStart(2, '0')}
+        </span>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ── Magnetic link ─────────────────────────────────────────────────────────────
+export function MagneticLink({ href, children }: { href: string; children: React.ReactNode }) {
   const ref = useRef<HTMLAnchorElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 280, damping: 18 })
   const sy = useSpring(y, { stiffness: 280, damping: 18 })
-
   const onMove = (e: React.MouseEvent) => {
     const r = ref.current?.getBoundingClientRect()
     if (!r) return
     x.set((e.clientX - (r.left + r.width  / 2)) * 0.38)
     y.set((e.clientY - (r.top  + r.height / 2)) * 0.38)
   }
-  const onLeave = () => { x.set(0); y.set(0) }
-
   return (
-    <motion.a
-      ref={ref}
-      href={href}
-      target="_blank" rel="noopener noreferrer"
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-        fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 600,
-        letterSpacing: '0.08em', textDecoration: 'none',
-        background: 'var(--accent)', color: '#fff',
-        padding: '0.8rem 1.4rem', borderRadius: 6,
-      }}
-      x={sx} y={sy}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      whileHover={{ scale: 1.05 }}
-      transition={{ scale: { duration: 0.2 } }}
+    <motion.a ref={ref} href={href} target="_blank" rel="noopener noreferrer"
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.08em', textDecoration: 'none', background: 'var(--accent)', color: '#fff', padding: '0.8rem 1.4rem', borderRadius: 6, x: sx, y: sy }}
+      onMouseMove={onMove} onMouseLeave={() => { x.set(0); y.set(0) }}
+      whileHover={{ scale: 1.05 }} transition={{ scale: { duration: 0.2 } }}
     >
       {children}
     </motion.a>
   )
 }
 
-// ── End card ─────────────────────────────────────────────────────────────────
-function EndCard() {
+
+export function EndCardTile({ fromRow = 0 }: { fromRow?: 0 | 1 }) {
   return (
-    <div style={{
-      flexShrink: 0,
-      alignSelf: 'stretch',
-      width: 'clamp(220px, 20vw, 290px)',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      gap: '1.4rem',
-      paddingLeft: 'clamp(2.5rem, 4vw, 4rem)',
-      paddingRight: 'clamp(2rem, 3vw, 3rem)',
-      borderLeft: '1px solid var(--border)',
-    }}>
-      <motion.div
-        initial={{ opacity: 0, x: 24 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, ease: EASE, delay: 0.4 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}
-      >
-        <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.52rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--fg-faint)' }}>
-          Let's talk
-        </p>
-        <h3 style={{
-          fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400,
-          fontSize: 'clamp(1.8rem, 2.4vw, 2.4rem)',
-          color: 'var(--fg)', lineHeight: 1.3,
-        }}>
+    <motion.div
+      initial={{ opacity: 0, y: fromRow === 0 ? -12 : 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: EASE, delay: 0.25 }}
+      style={{
+        flexShrink: 0,
+        height: 'calc(200% + 0.6rem)',
+        position: 'relative',
+        top: fromRow === 1 ? 'calc(-100% - 0.6rem)' : 0,
+        width: 'clamp(260px, 26vw, 400px)',
+        borderRadius: 5, overflow: 'hidden',
+        background: 'var(--bg)',
+        border: '1px solid var(--border)',
+        display: 'flex', flexDirection: 'column',
+        justifyContent: 'center', alignItems: 'flex-start',
+        padding: 'clamp(1.2rem, 2vw, 1.8rem)',
+        zIndex: 10,
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
+        <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.5rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--fg-faint)', margin: 0 }}>Let&apos;s talk</p>
+        <h3 style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: 'clamp(1.1rem, 1.6vw, 1.5rem)', color: 'var(--fg)', lineHeight: 1.3, margin: 0 }}>
           Bei einem Kaffee<br />können wir gerne<br />
-          <em style={{ color: 'var(--accent)' }}>tiefer eintauchen.</em>
+          <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>tiefer eintauchen.</em>
         </h3>
         <MagneticLink href="https://www.linkedin.com/in/sebastian-vitzthum-101154180/">
           Slide in my DMs
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </MagneticLink>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   )
 }
 
@@ -156,7 +279,6 @@ function Lightbox({ src, allSrcs, muted, onToggleMute, onClose, onPrev, onNext }
   onToggleMute: () => void; onClose: () => void; onPrev: () => void; onNext: () => void
 }) {
   const touchStart = useRef<number | null>(null)
-
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
@@ -180,96 +302,100 @@ function Lightbox({ src, allSrcs, muted, onToggleMute, onClose, onPrev, onNext }
         if (dx > 50) onPrev(); if (dx < -50) onNext()
         touchStart.current = null
       }}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'default' }}
     >
       <AnimatePresence mode="wait" initial={false}>
-        <motion.video
-          key={src}
-          src={src}
-          autoPlay loop muted={muted} playsInline
-          onClick={e => e.stopPropagation()}
-          initial={{ opacity: 0, scale: 0.88, filter: 'blur(12px)' }}
-          animate={{ opacity: 1, scale: 1,    filter: 'blur(0px)' }}
-          exit={{    opacity: 0, scale: 1.06, filter: 'blur(8px)' }}
-          transition={{ duration: 0.45, ease: EASE }}
-          style={{
-            position: 'relative', zIndex: 1,
-            maxWidth: 'min(88vw, 1100px)', maxHeight: '86dvh',
-            width: 'auto', height: 'auto',
-            borderRadius: 8,
-            boxShadow: '0 48px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)',
-            display: 'block',
-          } as React.CSSProperties}
-        />
+        {isVideo(src) ? (
+          <motion.video key={src} src={src} autoPlay loop muted={muted} playsInline
+            onClick={e => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.88, filter: 'blur(12px)' }}
+            animate={{ opacity: 1, scale: 1,    filter: 'blur(0px)' }}
+            exit={{    opacity: 0, scale: 1.06, filter: 'blur(8px)' }}
+            transition={{ duration: 0.45, ease: EASE }}
+            style={{ position: 'relative', zIndex: 1, maxWidth: 'min(88vw, 1100px)', maxHeight: '86dvh', width: 'auto', height: 'auto', borderRadius: 8, boxShadow: '0 48px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)', display: 'block' } as React.CSSProperties}
+          />
+        ) : (
+          <motion.img key={src} src={src} alt=""
+            onClick={e => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.88, filter: 'blur(12px)' }}
+            animate={{ opacity: 1, scale: 1,    filter: 'blur(0px)' }}
+            exit={{    opacity: 0, scale: 1.06, filter: 'blur(8px)' }}
+            transition={{ duration: 0.45, ease: EASE }}
+            style={{ position: 'relative', zIndex: 1, maxWidth: 'min(88vw, 1100px)', maxHeight: '86dvh', width: 'auto', height: 'auto', borderRadius: 8, boxShadow: '0 48px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)', display: 'block' } as React.CSSProperties}
+          />
+        )}
       </AnimatePresence>
 
-      {/* Prev */}
       <motion.button onClick={e => { e.stopPropagation(); onPrev() }}
         initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
         whileHover={{ x: -3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'none' }}
+        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 3L6 10l7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </motion.button>
 
-      {/* Next */}
       <motion.button onClick={e => { e.stopPropagation(); onNext() }}
         initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
         whileHover={{ x: 3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'none' }}
+        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 3l7 7-7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </motion.button>
 
-      {/* Close */}
       <motion.button onClick={e => { e.stopPropagation(); onClose() }}
         initial={{ opacity: 0, rotate: -45 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0 }}
         whileHover={{ rotate: 90, color: '#fff' }} transition={{ duration: 0.3, ease: EASE }}
-        style={{ position: 'fixed', top: 'clamp(1.2rem,3vh,2rem)', right: 'clamp(1.2rem,3vw,2.5rem)', zIndex: 2, background: 'none', border: 'none', padding: '0.8rem', color: 'rgba(255,255,255,0.35)', cursor: 'none' }}
+        style={{ position: 'fixed', top: 'clamp(1.2rem,3vh,2rem)', right: 'clamp(1.2rem,3vw,2.5rem)', zIndex: 2, background: 'none', border: 'none', padding: '0.8rem', color: 'rgba(255,255,255,0.5)', cursor: 'default' }}
       >
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2l14 14M16 2L2 16" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
       </motion.button>
 
-      {/* Mute toggle */}
-      <motion.button onClick={e => { e.stopPropagation(); onToggleMute() }}
-        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-        whileHover={{ color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', top: 'clamp(1.2rem,3vh,2rem)', left: 'clamp(1.2rem,3vw,2.5rem)', zIndex: 2, background: 'none', border: 'none', padding: '0.8rem', color: 'rgba(255,255,255,0.35)', cursor: 'none' }}
-      >
-        {muted ? (
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 6.5h3l4-3.5v12l-4-3.5H2V6.5zM14 6l-3 3m0-3l3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        ) : (
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 6.5h3l4-3.5v12l-4-3.5H2V6.5zM13 5.5a4 4 0 010 7M11 7a2 2 0 010 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        )}
-      </motion.button>
-
-      {/* Counter */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-        transition={{ duration: 0.35, delay: 0.1 }}
-        style={{ position: 'fixed', bottom: '1.8rem', left: '50%', transform: 'translateX(-50%)', zIndex: 2, pointerEvents: 'none', fontFamily: 'var(--ff-mono)', fontSize: '0.55rem', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)' }}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+        transition={{ duration: 0.3, ease: EASE }}
+        style={{ position: 'fixed', bottom: 'clamp(1.4rem,3vh,2.4rem)', left: 0, right: 0, zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', pointerEvents: 'none' }}
       >
-        {String(allSrcs.indexOf(src) + 1).padStart(2, '0')}&thinsp;/&thinsp;{String(allSrcs.length).padStart(2, '0')}
+        {isVideo(src) && <motion.button
+          onClick={e => { e.stopPropagation(); onToggleMute() }}
+          whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}
+          style={{ pointerEvents: 'auto', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 999, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '0.75rem 1.6rem', cursor: 'default', display: 'flex', alignItems: 'center', gap: '0.65rem', color: 'rgba(255,255,255,0.9)', fontFamily: 'var(--ff-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}
+        >
+          {muted ? (
+            <><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 6.5h3l4-3.5v12l-4-3.5H2V6.5zM14 6l-3 3m0-3l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>Ton an</>
+          ) : (
+            <><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 6.5h3l4-3.5v12l-4-3.5H2V6.5zM13 5.5a4 4 0 010 7M11 7a2 2 0 010 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>Ton aus</>
+          )}
+        </motion.button>}
+        <span style={{ fontFamily: 'var(--ff-mono)', fontSize: '0.52rem', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)' }}>
+          {String(allSrcs.indexOf(src) + 1).padStart(2, '0')}&thinsp;/&thinsp;{String(allSrcs.length).padStart(2, '0')}
+        </span>
       </motion.div>
     </motion.div>
   )
 }
 
 // ── Shared gallery page ───────────────────────────────────────────────────────
+type GalleryItem = string | string[]
+
 interface Props {
   titleMain: string
   titleAccent: string
-  row1: string[]
-  row2: string[]
+  row1: GalleryItem[]
+  row2: GalleryItem[]
   rowOffset?: string
+  endCardRow?: 0 | 1
 }
 
-export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, rowOffset = 'clamp(4rem, 8vw, 8rem)' }: Props) {
-  const trackRef      = useRef<HTMLDivElement>(null)
+export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, rowOffset = 'clamp(1.5rem, 2vw, 2.5rem)', endCardRow = 0 }: Props) {
+  const trackRef = useRef<HTMLDivElement>(null)
   const [scrollPct, setScrollPct] = useState(0)
-  const [active, setActive]       = useState<string | null>(null)
-  const [muted, setMuted]         = useState(true)
-  const allVideos = [...row1, ...row2]
+  const [active, setActive]   = useState<string | null>(null)
+  const [carousel, setCarousel] = useState<{ pages: string[] } | null>(null)
+  const [muted, setMuted]     = useState(true)
+
+  const allItems  = [...row1, ...row2]
+  const allVideos = allItems.filter((item): item is string => typeof item === 'string')
+  const videoCount = allVideos.filter(isVideo).length
 
   const close      = useCallback(() => setActive(null), [])
   const toggleMute = useCallback(() => setMuted(m => !m), [])
@@ -284,6 +410,7 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
     return allVideos[(i + 1) % allVideos.length]
   }), [allVideos])
 
+  // Horizontal scroll via vertical wheel
   useEffect(() => {
     const track = trackRef.current
     if (!track) return
@@ -301,18 +428,16 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
     return () => { track.removeEventListener('wheel', onWheel); track.removeEventListener('scroll', onScroll) }
   }, [])
 
-  const HEADER_H = 56
 
   return (
     <>
       <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', background: 'var(--bg)', overflow: 'hidden' }}>
 
-        {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE }}
           style={{
-            flexShrink: 0, height: HEADER_H,
+            flexShrink: 0, height: 56,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '0 clamp(1.2rem, 4vw, 3.5rem)',
             borderBottom: '1px solid var(--border)',
@@ -321,12 +446,19 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
             zIndex: 10,
           }}
         >
-          <motion.div whileHover={{ x: -3 }} transition={{ duration: 0.22, ease: EASE }}>
-            <Link
-              href="/#projects"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--ff-mono)', fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-mid)', textDecoration: 'none', transition: 'color 0.2s', fontWeight: 500 }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--fg)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--fg-mid)')}
+          <motion.div whileHover={{ x: -2 }} transition={{ duration: 0.22, ease: EASE }}>
+            <Link href="/#projects"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
+                fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500,
+                color: 'var(--fg-mid)', textDecoration: 'none',
+                border: '1px solid var(--border)',
+                borderRadius: 6, padding: '0.4rem 0.85rem',
+                background: 'transparent',
+                transition: 'color 0.2s, border-color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'transparent' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--fg-mid)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'transparent' }}
             >
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                 <path d="M9 6.5H4M6 4L3.5 6.5 6 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -340,45 +472,52 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
           </span>
 
           <span className="font-mono" style={{ fontSize: '0.58rem', letterSpacing: '0.18em', color: 'var(--fg-faint)' }}>
-            {allVideos.length} Videos
+            {videoCount} Videos{allVideos.length > videoCount ? ` · ${allVideos.length - videoCount} Bilder` : ''}
           </span>
         </motion.header>
 
-        {/* Scroll track */}
         <div
           ref={trackRef}
           style={{
             flex: 1, minHeight: 0, height: 0,
+            position: 'relative',
             overflowX: 'auto', overflowY: 'hidden',
-            display: 'flex', flexDirection: 'row', alignItems: 'stretch',
             WebkitOverflowScrolling: 'touch',
             msOverflowStyle: 'none', scrollbarWidth: 'none',
-            paddingLeft: 'clamp(1rem, 3vw, 2.5rem)',
-          }}
+            overscrollBehaviorX: 'contain',
+          } as React.CSSProperties}
         >
           <style>{`::-webkit-scrollbar { display: none }`}</style>
-          {/* Two video rows stacked */}
-          <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: '0.75rem 0' }}>
-              {[row1, row2].map((row, rowIdx) => (
-                <div
-                  key={rowIdx}
-                  style={{
-                    flex: 1, minHeight: 0,
-                    display: 'flex', flexDirection: 'row', gap: '0.6rem',
-                    paddingLeft: rowIdx === 1 ? rowOffset : 0,
-                  }}
-                >
-                  {row.map((src, i) => (
-                    <VideoItem key={src} src={src} delay={i * 0.03} rowIdx={rowIdx} onClick={() => setActive(src)} />
-                  ))}
-                </div>
-              ))}
+          {[row1, row2].map((row, rowIdx) => (
+            <div
+              key={rowIdx}
+              style={{
+                position: 'absolute',
+                left: rowIdx === 0
+                  ? 'clamp(1rem, 3vw, 2.5rem)'
+                  : `calc(clamp(1rem, 3vw, 2.5rem) + ${rowOffset})`,
+                top: rowIdx === 0 ? '0.75rem' : 'calc(50% + 0.3rem)',
+                height: 'calc(50% - 1.05rem)',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'stretch',
+                gap: '0.6rem',
+              } as React.CSSProperties}
+            >
+              {row.map((item, i) => {
+                if (Array.isArray(item)) {
+                  return <CarouselItem key={item[0]} pages={item} delay={i * 0.03} rowIdx={rowIdx} onClick={() => setCarousel({ pages: item })} />
+                }
+                return isVideo(item)
+                  ? <VideoItem  key={item} src={item} delay={i * 0.03} rowIdx={rowIdx} onClick={() => setActive(item)} />
+                  : <ImageItem  key={item} src={item} delay={i * 0.03} rowIdx={rowIdx} onClick={() => setActive(item)} />
+              })}
+              {rowIdx === endCardRow && <EndCardTile key="endcard" fromRow={endCardRow} />}
             </div>
-          {/* End card — sibling to the rows column, aligned via parent's alignItems: stretch */}
-          <EndCard />
+          ))}
+
         </div>
 
-        {/* Progress bar */}
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
           style={{ flexShrink: 0, height: 32, display: 'flex', alignItems: 'center', padding: '0 clamp(1rem, 3vw, 2.5rem)', borderTop: '1px solid var(--border)', gap: '1rem' }}
@@ -390,17 +529,19 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
         </motion.div>
       </div>
 
-      {/* Backdrop */}
       <motion.div
-        animate={{ opacity: active ? 1 : 0, pointerEvents: active ? 'auto' : 'none' }}
+        animate={{ opacity: active || carousel ? 1 : 0, pointerEvents: active || carousel ? 'auto' : 'none' }}
         transition={{ duration: 0.45, ease: EASE }}
-        onClick={close}
+        onClick={() => { close(); setCarousel(null) }}
         style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(11,10,8,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
       />
 
-      {/* Lightbox */}
       <AnimatePresence>
         {active && <Lightbox src={active} allSrcs={allVideos} muted={muted} onToggleMute={toggleMute} onClose={close} onPrev={prev} onNext={next} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {carousel && <CarouselLightbox pages={carousel.pages} onClose={() => setCarousel(null)} />}
       </AnimatePresence>
     </>
   )

@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
+import { EndCardTile } from '@/components/VideoGalleryPage'
+
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
@@ -83,6 +85,7 @@ function Lightbox({ src, onClose, onPrev, onNext }: {
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'default',
       }}
     >
 
@@ -122,7 +125,7 @@ function Lightbox({ src, onClose, onPrev, onNext }: {
         style={{
           position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)',
           zIndex: 2, background: 'none', border: 'none', padding: '1.2rem',
-          color: 'rgba(255,255,255,0.3)', cursor: 'none',
+          color: 'rgba(255,255,255,0.3)', cursor: 'default',
         }}
         aria-label="Vorheriges Bild"
       >
@@ -142,7 +145,7 @@ function Lightbox({ src, onClose, onPrev, onNext }: {
         style={{
           position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)',
           zIndex: 2, background: 'none', border: 'none', padding: '1.2rem',
-          color: 'rgba(255,255,255,0.3)', cursor: 'none',
+          color: 'rgba(255,255,255,0.3)', cursor: 'default',
         }}
         aria-label="Nächstes Bild"
       >
@@ -162,7 +165,7 @@ function Lightbox({ src, onClose, onPrev, onNext }: {
         style={{
           position: 'fixed', top: 'clamp(1.2rem,3vh,2rem)', right: 'clamp(1.2rem,3vw,2.5rem)',
           zIndex: 2, background: 'none', border: 'none', padding: '0.8rem',
-          color: 'rgba(255,255,255,0.35)', cursor: 'none',
+          color: 'rgba(255,255,255,0.5)', cursor: 'default',
         }}
         aria-label="Schließen"
       >
@@ -256,18 +259,21 @@ export default function FotografiePage() {
             zIndex: 10,
           }}
         >
-          <motion.div whileHover={{ x: -3 }} transition={{ duration: 0.22, ease: EASE }}>
+          <motion.div whileHover={{ x: -2 }} transition={{ duration: 0.22, ease: EASE }}>
             <Link
               href="/#projects"
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                fontFamily: 'var(--ff-mono)', fontSize: '0.65rem',
-                letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: 'var(--fg-mid)', textDecoration: 'none', transition: 'color 0.2s',
-                fontWeight: 500,
+                display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
+                fontFamily: 'var(--ff-mono)', fontSize: '0.62rem',
+                letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500,
+                color: 'var(--fg-mid)', textDecoration: 'none',
+                border: '1px solid var(--border)',
+                borderRadius: 6, padding: '0.4rem 0.85rem',
+                background: 'transparent',
+                transition: 'color 0.2s, border-color 0.2s, background 0.2s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--fg)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--fg-mid)')}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'transparent' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--fg-mid)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'transparent' }}
             >
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                 <path d="M9 6.5H4M6 4L3.5 6.5 6 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -289,15 +295,14 @@ export default function FotografiePage() {
         <div
           ref={trackRef}
           style={{
-            flex: 1, minHeight: 0,
+            flex: 1, minHeight: 0, height: 0,
+            position: 'relative',
             overflowX: 'auto', overflowY: 'hidden',
-            display: 'flex', flexDirection: 'column',
-            gap: '0.6rem',
-            padding: '0.75rem 0 0.75rem clamp(1rem, 3vw, 2.5rem)',
             WebkitOverflowScrolling: 'touch',
             msOverflowStyle: 'none',
             scrollbarWidth: 'none',
-          }}
+            overscrollBehaviorX: 'contain',
+          } as React.CSSProperties}
         >
           <style>{`::-webkit-scrollbar { display: none }`}</style>
 
@@ -305,9 +310,13 @@ export default function FotografiePage() {
             <div
               key={rowIdx}
               style={{
-                flex: 1, minHeight: 0,
-                display: 'flex', flexDirection: 'row',
-                gap: '0.6rem', alignItems: 'stretch',
+                position: 'absolute',
+                left: 'clamp(1rem, 3vw, 2.5rem)',
+                top: rowIdx === 0 ? '0.75rem' : 'calc(50% + 0.3rem)',
+                height: 'calc(50% - 1.05rem)',
+                display: 'flex',
+                gap: '0.6rem',
+                alignItems: 'stretch',
               }}
             >
               {row.map((src, i) => (
@@ -322,12 +331,12 @@ export default function FotografiePage() {
                     flexShrink: 0, borderRadius: 5,
                     overflow: 'hidden', background: 'var(--bg-muted)',
                     cursor: 'none', position: 'relative',
+                    height: '100%',
                   }}
                 >
                   <motion.img
                     src={src}
                     alt=""
-                    loading={i < 5 ? 'eager' : 'lazy'}
                     whileHover={{ scale: 1.04 }}
                     transition={{ duration: 0.5, ease: EASE }}
                     style={{
@@ -335,7 +344,6 @@ export default function FotografiePage() {
                       display: 'block', userSelect: 'none',
                     } as React.CSSProperties}
                   />
-                  {/* Hover shimmer */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     whileHover={{ opacity: 1 }}
@@ -347,8 +355,7 @@ export default function FotografiePage() {
                   />
                 </motion.div>
               ))}
-              {/* Right-edge spacer */}
-              <div style={{ flexShrink: 0, width: 'clamp(1rem, 3vw, 2.5rem)' }} />
+              {rowIdx === 1 && <EndCardTile fromRow={1} />}
             </div>
           ))}
         </div>
