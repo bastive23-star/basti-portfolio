@@ -7,13 +7,13 @@ const services = [
   {
     num: '01',
     title: 'Video & Film',
-    desc: 'Imagefilme, Employer Branding, Reels, Eventdokumentation — vom Dreh bis zum fertigen Schnitt, alles aus einer Hand. Kein Briefing-Stille-Post, keine externen Dienstleister.',
+    desc: 'Imagefilme, Employer Branding, Reels, Eventdokumentation — vom Dreh bis zum fertigen Schnitt, alles aus einer Hand. Kein Briefing-Stille-Post, keine externen Dienstleister. Bei Bedarf auch als Projektleiter — ich kenne beide Seiten des Sets.',
     tags: ['Dreh', 'Schnitt', 'Imagefilm', 'Reels', 'Eventfilm'],
   },
   {
     num: '02',
     title: 'Animation & Motion',
-    desc: 'After Effects ist mein tägliches Werkzeug. Erklärvideos, Animationen, Intros — was auch immer gebraucht wird.',
+    desc: 'After Effects ist mein tägliches Werkzeug. Erklärvideos, Animationen, Intros — mit genug Projekterfahrung um auch die Leitung zu übernehmen.',
     tags: ['After Effects', 'Motion Graphics', 'Logoanimation', 'Explainer'],
   },
   {
@@ -26,7 +26,7 @@ const services = [
     num: '04',
     title: 'AI-Produktionen',
     desc: 'Flux, Kling, Runway, ElevenLabs, Nano Banana — KI als echtes Produktionswerkzeug. Synthetische Bilder, Voice-Over, generierter B-Roll — bis hin zu ganzen Kampagnen.',
-    tags: ['Midjourney', 'Sora', 'ElevenLabs', 'Runway', 'ComfyUI'],
+    tags: ['Flux', 'Kling', 'Runway', 'ElevenLabs', 'Nano Banana'],
   },
   {
     num: '05',

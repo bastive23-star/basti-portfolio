@@ -198,7 +198,7 @@ export default function About() {
                   <em style={{ fontFamily: 'var(--ff-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>Basti.</em>
                 </h2>
                 <p style={{ fontFamily: 'var(--ff-body)', fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)', color: 'var(--fg-mid)', lineHeight: 1.85, fontWeight: 300, marginBottom: '2.5rem' }}>
-                  In über 11 Jahren Agentur habe ich gelernt, was einen Content Generalist ausmacht: Ich sitze nicht an einer Stelle im Prozess — ich drehe mit schlankem Equipment, fotografiere, schneide, animiere und arbeite mit AI-Workflows. Alles aus einer Hand.
+                  In über 11 Jahren Agentur habe ich gelernt, was einen Content Generalist ausmacht: Ich sitze nicht an einer Stelle im Prozess — ich drehe mit schlankem Equipment, fotografiere, schneide, animiere und arbeite mit AI-Workflows. Alles aus einer Hand — und genug Erfahrung, um Projekte zu führen und externe Teams anzuleiten.
                 </p>
 
                 <div>
