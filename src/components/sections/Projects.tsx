@@ -84,9 +84,6 @@ export default function Projects() {
               </motion.h2>
             </div>
           </div>
-          <motion.a href="#contact" data-cursor="→" className="tag link-underline" style={{ color: 'var(--fg-mid)', textDecoration: 'none' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
-            Alle Projekte →
-          </motion.a>
         </motion.div>
 
         {/* List with floating preview */}
@@ -187,49 +184,29 @@ export default function Projects() {
           </motion.div>
 
           {/* Project rows */}
-          {projects.map(({ num, title, category, href }, i) => {
+          {projects.map(({ num, title, href }, i) => {
             const rowContent = (
               <>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem' }}>
                   <span className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--fg-faint)' }}>{num}</span>
-                  {href ? (
-                    // Fancy sweep: accent text slides in over fg text via clip-path
-                    <motion.div
-                      className="font-display"
-                      style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, position: 'relative', display: 'inline-block' }}
-                      animate={{ x: hovered === i ? 8 : 0 }}
-                      transition={{ duration: 0.3, ease: EASE }}
-                    >
-                      {/* Base layer */}
-                      <span style={{ color: 'var(--fg)', display: 'block' }}>{title}</span>
-                      {/* Accent sweep layer */}
-                      <motion.span
-                        aria-hidden
-                        style={{ position: 'absolute', inset: 0, color: 'var(--accent)', display: 'block', whiteSpace: 'nowrap' }}
-                        animate={{ clipPath: hovered === i ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)' }}
-                        transition={{ duration: 0.45, ease: EASE }}
-                      >
-                        {title}
-                      </motion.span>
-                    </motion.div>
-                  ) : (
-                    <motion.h3
-                      className="font-display"
-                      style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, color: 'var(--fg)' }}
-                      animate={{ x: hovered === i ? 8 : 0 }}
-                      transition={{ duration: 0.3, ease: EASE }}
+                  <motion.div
+                    className="font-display"
+                    style={{ fontSize: 'clamp(1.4rem,3.5vw,2.6rem)', fontWeight: 700, position: 'relative', display: 'inline-block' }}
+                    animate={{ x: hovered === i ? 8 : 0 }}
+                    transition={{ duration: 0.3, ease: EASE }}
+                  >
+                    <span style={{ color: 'var(--fg)', display: 'block' }}>{title}</span>
+                    <motion.span
+                      aria-hidden
+                      style={{ position: 'absolute', inset: 0, color: 'var(--accent)', display: 'block', whiteSpace: 'nowrap' }}
+                      animate={{ clipPath: hovered === i ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)' }}
+                      transition={{ duration: 0.45, ease: EASE }}
                     >
                       {title}
-                    </motion.h3>
-                  )}
+                    </motion.span>
+                  </motion.div>
                 </div>
                 <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                  <span
-                    className="tag"
-                    style={{ opacity: hovered === i ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: 'none' }}
-                  >
-                    {category}
-                  </span>
                   <motion.div
                     animate={{ x: hovered === i ? 4 : 0, opacity: hovered === i ? 1 : 0.3 }}
                     transition={{ duration: 0.25 }}
@@ -274,7 +251,7 @@ export default function Projects() {
                 key={i}
                 role="button"
                 tabIndex={0}
-                aria-label={`${title} — ${category}`}
+                aria-label={title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
