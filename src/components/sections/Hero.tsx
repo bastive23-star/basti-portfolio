@@ -284,10 +284,11 @@ export default function Hero() {
         // fastSeek() is Firefox/Safari's scrub-optimised seek — snaps to the
         // nearest keyframe instead of decoding every intermediate frame,
         // which is what makes Firefox stutter on currentTime assignment.
-        if ('fastSeek' in video) {
-          (video as HTMLVideoElement & { fastSeek(t: number): void }).fastSeek(t)
+        const v2 = video as HTMLVideoElement & { fastSeek?: (t: number) => void }
+        if (v2.fastSeek) {
+          v2.fastSeek(t)
         } else {
-          video.currentTime = t
+          v2.currentTime = t
         }
       }
     })
