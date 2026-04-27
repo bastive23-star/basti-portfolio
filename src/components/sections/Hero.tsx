@@ -279,8 +279,16 @@ export default function Hero() {
     const video = videoRef.current
     if (!video) return
     return scrollYProgress.on('change', v => {
-      if (video.readyState >= 2 && isFinite(video.duration)) {
-        video.currentTime = v * video.duration
+      if (video.readyState >= 1 && isFinite(video.duration)) {
+        const t = v * video.duration
+        // fastSeek() is Firefox/Safari's scrub-optimised seek — snaps to the
+        // nearest keyframe instead of decoding every intermediate frame,
+        // which is what makes Firefox stutter on currentTime assignment.
+        if ('fastSeek' in video) {
+          (video as HTMLVideoElement & { fastSeek(t: number): void }).fastSeek(t)
+        } else {
+          video.currentTime = t
+        }
       }
     })
   }, [scrollYProgress, isMobile])

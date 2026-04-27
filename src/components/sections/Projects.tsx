@@ -163,6 +163,9 @@ export default function Projects() {
                   width: 260, height: 220,
                   boxShadow: '0 28px 64px rgba(0,0,0,0.22)',
                   overflow: 'hidden', position: 'relative',
+                  // Force compositing layer so Firefox clips overflow correctly
+                  // against the animated borderRadius (otherwise renders as rectangle)
+                  transform: 'translateZ(0)',
                 }}
               >
                 <AnimatePresence mode="sync" initial={false}>
