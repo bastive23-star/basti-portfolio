@@ -402,7 +402,7 @@ export default function Nav() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
       >
-        <Link href="/" style={{ textDecoration: 'none', zIndex: 101, position: 'relative' }}>
+        <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ textDecoration: 'none', zIndex: 101, position: 'relative' }}>
           <motion.span
             className="font-display"
             style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em', display: 'block', color: 'var(--fg)' }}

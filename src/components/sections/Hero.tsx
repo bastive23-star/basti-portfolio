@@ -240,11 +240,9 @@ export default function Hero() {
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
 
   const headlineY = useTransform(scrollYProgress, [0, 1], ['0%', '22%'])
-  const headlineO = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const subY      = useTransform(scrollYProgress, [0, 1], ['0%', '36%'])
   const videoY    = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const videoScale = useTransform(scrollYProgress, [0, 1], [1.04, 1.14])
-  const videoOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
   const orbScrollY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
 
   const rawX = useMotionValue(0)
@@ -317,7 +315,7 @@ export default function Hero() {
         {/* Background video */}
         <motion.div
           className="hero-video"
-          style={{ position: 'absolute', inset: '-10%', y: videoY, scale: videoScale, opacity: videoOpacity, zIndex: 0, cursor: 'default' }}
+          style={{ position: 'absolute', inset: '-10%', y: videoY, scale: videoScale, zIndex: 0, cursor: 'default' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 1.8, ease: 'easeOut' }}
@@ -371,7 +369,7 @@ export default function Hero() {
         </motion.div>
 
         {/* ── Headline block ── */}
-        <motion.div style={{ y: headlineY, opacity: headlineO, position: 'relative', zIndex: 2 }}>
+        <motion.div style={{ y: headlineY, position: 'relative', zIndex: 2 }}>
 
           {/* Label */}
           <motion.div
@@ -432,7 +430,7 @@ export default function Hero() {
 
         {/* Scroll indicator — fades out as user scrolls */}
         <motion.div
-          style={{ position: 'absolute', bottom: '1.8rem', left: '50%', transform: 'translateX(-50%)', zIndex: 2, opacity: headlineO }}
+          style={{ position: 'absolute', bottom: '1.8rem', left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ delay: 1.2, duration: 1 }}

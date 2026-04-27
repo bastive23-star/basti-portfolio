@@ -147,25 +147,22 @@ export default function Projects() {
               <motion.div
                 animate={{
                   background: hovered !== null ? projects[hovered].color : '#1a1a1a',
-                  borderRadius: [
-                    '38% 62% 54% 46% / 48% 44% 56% 52%',
-                    '46% 54% 44% 56% / 56% 52% 48% 44%',
-                    '54% 46% 60% 40% / 44% 58% 42% 56%',
-                    '42% 58% 48% 52% / 52% 46% 54% 48%',
-                    '38% 62% 54% 46% / 48% 44% 56% 52%',
+                  clipPath: [
+                    'inset(0 round 38% 62% 54% 46% / 48% 44% 56% 52%)',
+                    'inset(0 round 46% 54% 44% 56% / 56% 52% 48% 44%)',
+                    'inset(0 round 54% 46% 60% 40% / 44% 58% 42% 56%)',
+                    'inset(0 round 42% 58% 48% 52% / 52% 46% 54% 48%)',
+                    'inset(0 round 38% 62% 54% 46% / 48% 44% 56% 52%)',
                   ],
                 }}
                 transition={{
                   background: { duration: 0.35, ease: EASE },
-                  borderRadius: { repeat: Infinity, duration: 7, ease: 'easeInOut' },
+                  clipPath: { repeat: Infinity, duration: 7, ease: 'easeInOut' },
                 }}
                 style={{
                   width: 260, height: 220,
                   boxShadow: '0 28px 64px rgba(0,0,0,0.22)',
-                  overflow: 'hidden', position: 'relative',
-                  // Force compositing layer so Firefox clips overflow correctly
-                  // against the animated borderRadius (otherwise renders as rectangle)
-                  transform: 'translateZ(0)',
+                  position: 'relative',
                 }}
               >
                 <AnimatePresence mode="sync" initial={false}>
