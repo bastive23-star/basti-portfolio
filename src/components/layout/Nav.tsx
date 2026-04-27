@@ -181,7 +181,7 @@ function FloatingCTA({ visible }: { visible: boolean }) {
               background: 'var(--accent)',
               color: 'var(--bg)',
               textDecoration: 'none',
-              cursor: 'none',
+              cursor: 'inherit',
               willChange: 'transform',
             }}
           >
@@ -465,8 +465,10 @@ export default function Nav() {
         <button
           className="flex md:hidden"
           onClick={() => setMenuOpen(v => !v)}
-          style={{ background: 'none', border: 'none', padding: '0.4rem', cursor: 'none', zIndex: 101, position: 'relative' }}
+          style={{ background: 'none', border: 'none', padding: '0.4rem', cursor: 'inherit', zIndex: 101, position: 'relative' }}
           aria-label={menuOpen ? 'Menü schließen' : 'Menü öffnen'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
         >
           <BurgerIcon open={menuOpen} />
         </button>

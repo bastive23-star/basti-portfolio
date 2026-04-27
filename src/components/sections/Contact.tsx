@@ -33,7 +33,7 @@ function MagneticBtn({ children, type, onClick }: { children: React.ReactNode; t
           borderRadius: 3,
           color: 'var(--fg)',
           background: 'transparent',
-          cursor: 'none',
+          cursor: 'inherit',
           display: 'inline-block',
         }}
         whileHover={{ background: 'var(--fg)', color: 'var(--bg)', borderColor: 'var(--fg)' }}

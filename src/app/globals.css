@@ -156,11 +156,11 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
 /* ── Hero section height — CSS handles responsive, avoids JS-hydration layout shift ── */
-.hero-outer { height: 220dvh; }
+.hero-outer { height: 220vh; height: 220dvh; }
 
 /* ── Mobile responsive utilities ── */
 @media (max-width: 767px) {
-  .hero-outer { height: 100dvh; }
+  .hero-outer { height: 100vh; height: 100dvh; }
 
   .hidden.md\:flex  { display: none !important; }
   .hidden.md\:block { display: none !important; }

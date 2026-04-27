@@ -29,7 +29,7 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
       onHoverStart={() => { videoRef.current?.play().catch(() => {}); setPlaying(true) }}
       onHoverEnd={() => { videoRef.current?.pause(); if (videoRef.current) videoRef.current.currentTime = 0; setPlaying(false) }}
       data-cursor="Play"
-      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
+      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'inherit', position: 'relative', height: '100%' }}
     >
       <img
         src={thumbFor(src)}
@@ -77,7 +77,7 @@ function ImageItem({ src, delay, rowIdx, onClick }: {
       transition={{ duration: 0.55, ease: EASE, delay }}
       onClick={onClick}
       data-cursor="View"
-      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
+      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'inherit', position: 'relative', height: '100%' }}
     >
       <img src={src} alt=""
         style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
@@ -96,7 +96,7 @@ function CarouselItem({ pages, delay, rowIdx, onClick }: {
       transition={{ duration: 0.55, ease: EASE, delay }}
       onClick={onClick}
       data-cursor="View"
-      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'none', position: 'relative', height: '100%' }}
+      style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'inherit', position: 'relative', height: '100%' }}
     >
       <img src={pages[0]} alt=""
         style={{ height: '100%', width: 'auto', display: 'block', userSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
