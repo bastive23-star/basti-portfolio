@@ -145,19 +145,12 @@ export default function Projects() {
           >
               {/* Card shell — color transitions smoothly, border-radius wabbles */}
               <motion.div
+                className="blob-card"
                 animate={{
                   background: hovered !== null ? projects[hovered].color : '#1a1a1a',
-                  clipPath: [
-                    'inset(0 round 38% 62% 54% 46% / 48% 44% 56% 52%)',
-                    'inset(0 round 46% 54% 44% 56% / 56% 52% 48% 44%)',
-                    'inset(0 round 54% 46% 60% 40% / 44% 58% 42% 56%)',
-                    'inset(0 round 42% 58% 48% 52% / 52% 46% 54% 48%)',
-                    'inset(0 round 38% 62% 54% 46% / 48% 44% 56% 52%)',
-                  ],
                 }}
                 transition={{
                   background: { duration: 0.35, ease: EASE },
-                  clipPath: { repeat: Infinity, duration: 7, ease: 'easeInOut' },
                 }}
                 style={{
                   width: 260, height: 220,
