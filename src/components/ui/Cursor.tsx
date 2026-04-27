@@ -44,8 +44,8 @@ export default function Cursor() {
         ringRef.current.style.width  = `${size}px`
         ringRef.current.style.height = `${size}px`
         ringRef.current.style.borderColor = expandedRef.current
-          ? 'rgba(20,18,16,0.55)'
-          : 'rgba(20,18,16,0.25)'
+          ? 'rgba(255,255,255,0.9)'
+          : 'rgba(255,255,255,0.55)'
       }
     }
 
@@ -98,7 +98,8 @@ export default function Cursor() {
           top: 0, left: 0,
           width: 6, height: 6,
           borderRadius: '50%',
-          background: 'var(--fg)',
+          background: '#fff',
+          mixBlendMode: 'difference',
           opacity: visible ? 1 : 0,
           transition: 'opacity 0.2s',
           zIndex: 999999,
@@ -113,8 +114,9 @@ export default function Cursor() {
           top: 0, left: 0,
           width: 36, height: 36,
           borderRadius: '50%',
-          border: '1.5px solid rgba(20,18,16,0.25)',
+          border: '1.5px solid rgba(255,255,255,0.55)',
           background: 'transparent',
+          mixBlendMode: 'difference',
           opacity: visible ? 1 : 0,
           transition: 'width 0.25s var(--ease-out-expo), height 0.25s var(--ease-out-expo), border-color 0.2s, opacity 0.2s',
           zIndex: 999999,
