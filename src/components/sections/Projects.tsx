@@ -133,13 +133,16 @@ export default function Projects() {
             style={{
               position: 'absolute', left: 0, top: 0,
               x: cardX, y: cardY,
+              // Offset by half card size so cursor points to card center.
+              // Using margins instead of a nested transform wrapper — Firefox has
+              // rendering bugs when combining Framer Motion x/y with child transforms.
+              marginLeft: -130,  // –(260/2)
+              marginTop: -128,   // –(220*0.58)
               zIndex: 10, pointerEvents: 'none',
             }}
             animate={{ opacity: hovered !== null ? 1 : 0, scale: hovered !== null ? 1 : 0.82 }}
             transition={{ duration: 0.25, ease: EASE }}
           >
-            {/* Centering wrapper */}
-            <motion.div style={{ transform: 'translate(-50%, -58%)' }}>
               {/* Card shell — color transitions smoothly, border-radius wabbles */}
               <motion.div
                 animate={{
@@ -182,7 +185,6 @@ export default function Projects() {
                   )}
                 </AnimatePresence>
               </motion.div>
-            </motion.div>
           </motion.div>
 
           {/* Project rows */}

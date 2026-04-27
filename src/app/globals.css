@@ -30,7 +30,7 @@
 
 /* ── Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; cursor: none; }
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--ff-body), sans-serif;
@@ -40,8 +40,10 @@ body {
   overflow-x: hidden;
 }
 
-*                                    { cursor: none !important; }
-a, button, [role="button"], [tabindex] { cursor: pointer !important; }
+/* cursor:none only active when JS adds .custom-cursor to <html> */
+html.custom-cursor *                                     { cursor: none !important; }
+html.custom-cursor a, html.custom-cursor button,
+html.custom-cursor [role="button"], html.custom-cursor [tabindex] { cursor: none !important; }
 
 /* Very subtle grain */
 body::after {
@@ -164,8 +166,7 @@ html.lenis, html.lenis body { height: auto; }
   .hidden.md\:block { display: none !important; }
   .flex.md\:hidden  { display: flex !important; }
 
-  /* Disable cursor override on touch devices */
-  html, body, * { cursor: auto !important; }
+  /* Custom cursor not active on mobile — no override needed */
 
   /* Tighten section spacing */
   .section-pad {

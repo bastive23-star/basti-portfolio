@@ -2,37 +2,59 @@
 import { useEffect, useRef, useState } from 'react'
 
 export default function Cursor() {
-  const dotRef  = useRef<HTMLDivElement>(null)
-  const ringRef = useRef<HTMLDivElement>(null)
-  const [label, setLabel]     = useState('')
+  const dotRef    = useRef<HTMLDivElement>(null)
+  const ringRef   = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
+  // Store expanded in a ref so the rAF tick always sees current value
+  const expandedRef = useRef(false)
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
-    // Touch-only devices don't need a custom cursor
-    if (navigator.maxTouchPoints > 0) return
+    expandedRef.current = expanded
+  }, [expanded])
+
+  useEffect(() => {
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
+    document.documentElement.classList.add('custom-cursor')
 
     let mx = 0, my = 0
     let rx = 0, ry = 0
     let raf: number
 
-    const onMove = (e: MouseEvent) => {
-      mx = e.clientX; my = e.clientY
-      setVisible(true)
+    // Dot: 6×6, offset -3 to centre on cursor
+    const DOT_HALF  = 3
+    // Ring sizes
+    const RING_SM   = 36
+    const RING_LG   = 56
+    const RING_SM_H = RING_SM / 2
+    const RING_LG_H = RING_LG / 2
+
+    const applyDot = () => {
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${mx}px, ${my}px)`
+        dotRef.current.style.transform = `translate(${mx - DOT_HALF}px, ${my - DOT_HALF}px)`
       }
-      // Restart ring loop if it had settled
-      if (!raf) raf = requestAnimationFrame(tick)
+    }
+
+    const applyRing = () => {
+      if (ringRef.current) {
+        const half = expandedRef.current ? RING_LG_H : RING_SM_H
+        ringRef.current.style.transform = `translate(${rx - half}px, ${ry - half}px)`
+        const size = expandedRef.current ? RING_LG : RING_SM
+        ringRef.current.style.width  = `${size}px`
+        ringRef.current.style.height = `${size}px`
+        ringRef.current.style.borderColor = expandedRef.current
+          ? 'rgba(20,18,16,0.55)'
+          : 'rgba(20,18,16,0.25)'
+      }
     }
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+
     const tick = () => {
       rx = lerp(rx, mx, 0.12)
       ry = lerp(ry, my, 0.12)
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${rx}px, ${ry}px)`
-      }
-      // Stop looping once ring has caught up — restart on next mousemove
+      applyRing()
       if (Math.abs(mx - rx) > 0.1 || Math.abs(my - ry) > 0.1) {
         raf = requestAnimationFrame(tick)
       } else {
@@ -40,11 +62,20 @@ export default function Cursor() {
       }
     }
 
+    const onMove = (e: MouseEvent) => {
+      mx = e.clientX; my = e.clientY
+      setVisible(true)
+      applyDot()
+      if (!raf) raf = requestAnimationFrame(tick)
+    }
+
     const onOver = (e: MouseEvent) => {
-      const el = (e.target as HTMLElement)
+      const el = e.target as HTMLElement
       const dataCursorEl = el.closest('[data-cursor]')
-      const clickable = el.closest('a, button, [role="button"], [tabindex]')
-      setLabel(dataCursorEl?.getAttribute('data-cursor') ?? (clickable ? 'circle' : ''))
+      const clickable    = el.closest('a, button, [role="button"], [tabindex]')
+      const next = !!(dataCursorEl || clickable)
+      setExpanded(next)
+      expandedRef.current = next
     }
 
     window.addEventListener('mousemove', onMove)
@@ -53,44 +84,43 @@ export default function Cursor() {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseover', onOver)
       cancelAnimationFrame(raf)
+      document.documentElement.classList.remove('custom-cursor')
     }
   }, [])
 
-  const expanded = label !== ''
-
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 999999, pointerEvents: 'none' }}>
-      {/* Dot */}
+    <>
+      {/* Dot — position: fixed, centred via JS transform */}
       <div
         ref={dotRef}
         style={{
-          position: 'absolute',
-          top: -3, left: -3,
+          position: 'fixed',
+          top: 0, left: 0,
           width: 6, height: 6,
           borderRadius: '50%',
           background: 'var(--fg)',
           opacity: visible ? 1 : 0,
           transition: 'opacity 0.2s',
-          willChange: 'transform',
+          zIndex: 999999,
+          pointerEvents: 'none',
         }}
       />
-      {/* Ring — grows on hover, never fills */}
+      {/* Ring — position: fixed, size + centering fully via JS */}
       <div
         ref={ringRef}
         style={{
-          position: 'absolute',
-          top:  expanded ? -28 : -18,
-          left: expanded ? -28 : -18,
-          width:  expanded ? 56 : 36,
-          height: expanded ? 56 : 36,
+          position: 'fixed',
+          top: 0, left: 0,
+          width: 36, height: 36,
           borderRadius: '50%',
-          border: `1.5px solid ${expanded ? 'rgba(20,18,16,0.55)' : 'rgba(20,18,16,0.25)'}`,
+          border: '1.5px solid rgba(20,18,16,0.25)',
           background: 'transparent',
           opacity: visible ? 1 : 0,
-          transition: 'width 0.25s var(--ease-out-expo), height 0.25s var(--ease-out-expo), top 0.25s var(--ease-out-expo), left 0.25s var(--ease-out-expo), border-color 0.2s, opacity 0.2s',
-          willChange: 'transform',
+          transition: 'width 0.25s var(--ease-out-expo), height 0.25s var(--ease-out-expo), border-color 0.2s, opacity 0.2s',
+          zIndex: 999999,
+          pointerEvents: 'none',
         }}
       />
-    </div>
+    </>
   )
 }
