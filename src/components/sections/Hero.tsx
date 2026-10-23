@@ -21,12 +21,25 @@ function Intro({ onDone, onContentStart }: { onDone: () => void; onContentStart:
   const [showHellos, setShowHellos] = useState(true)
   const [card,       setCard]       = useState<Card>(null)
   const [overlayOut, setOverlayOut] = useState(false)
+  const timers = useRef<{ interval?: ReturnType<typeof setInterval>; timeouts: ReturnType<typeof setTimeout>[] }>({ timeouts: [] })
+
+  const skip = () => {
+    if (overlayOut) return
+    clearInterval(timers.current.interval)
+    timers.current.timeouts.forEach(clearTimeout)
+    setShowHellos(false)
+    setCard(null)
+    setOverlayOut(true)
+    onContentStart()
+    timers.current.timeouts = [setTimeout(onDone, 1100)]
+  }
 
   useEffect(() => {
     // Cycle languages rapidly — each shown for 260ms
     const id = setInterval(() => setHelloIdx(i => (i + 1) % HELLOS.length), 260)
+    timers.current.interval = id
 
-    const ts = [
+    timers.current.timeouts = [
       // 3 000ms — stop swipe, blur out language block
       setTimeout(() => { clearInterval(id); setShowHellos(false) }, 3000),
       // 3 150ms — "Ich bin Basti." zooms in from blur
@@ -40,9 +53,17 @@ function Intro({ onDone, onContentStart }: { onDone: () => void; onContentStart:
       // 9 100ms — unmount intro overlay
       setTimeout(onDone, 9100),
     ]
-    return () => { clearInterval(id); ts.forEach(clearTimeout) }
+    return () => { clearInterval(id); timers.current.timeouts.forEach(clearTimeout) }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter') skip()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
 
   const h = HELLOS[helloIdx]
 
@@ -153,6 +174,26 @@ function Intro({ onDone, onContentStart }: { onDone: () => void; onContentStart:
           </motion.div>
         )}
 
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {!overlayOut && (
+          <motion.button
+            type="button"
+            onClick={skip}
+            data-cursor="→"
+            className="intro-skip"
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0, transition: { delay: 0.9, duration: 0.6, ease: EASE } }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
+          >
+            Intro überspringen
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+              <path d="M2 2.5l6 4.5-6 4.5V2.5z" fill="currentColor" />
+              <path d="M11 2.5v9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </motion.button>
+        )}
       </AnimatePresence>
     </motion.div>
   )
