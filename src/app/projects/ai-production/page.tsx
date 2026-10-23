@@ -6,10 +6,10 @@ const DIR  = `${BASE}/images/projects/AI_Production`
 const v    = (f: string) => `${DIR}/${f}`
 
 const FEATURED = {
-  src: v('K&B_RotaJET_Compact_Teaser_16x9.mp4'),
-  client: 'Koenig & Bauer',
-  title: 'RotaJET',
-  accent: 'Compact',
+  src: v('PH_Sterilium_HeroVideo_16x9.mp4'),
+  client: 'Paul Hartmann',
+  title: 'Sterillium',
+  accent: 'To\u00A0Go',
 }
 
 const ROWS: LibraryRow[] = [
@@ -48,9 +48,8 @@ const ROWS: LibraryRow[] = [
     ].map(v),
   },
   {
-    title: 'Weitere Kunden',
+    title: 'Aral',
     items: [
-      'K&B_RotaJET_Compact_Teaser_16x9.mp4',
       'Aral-Kaffeestudie_AI_Actionfiguren_9x16.mp4',
     ].map(v),
   },
