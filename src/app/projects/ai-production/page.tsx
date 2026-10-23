@@ -6,6 +6,9 @@ const DIR  = `${BASE}/images/projects/AI_Production`
 const v    = (f: string) => `${DIR}/${f}`
 
 const ROW1 = [
+  'AI_AfterHour_PH_AI_Campaign_9x16_A.mp4',
+  'AI_AfterHour_PH_AI_Campaign_9x16_B.mp4',
+  'AI_AfterHour_PH_AI_Campaign_9x16_C.mp4',
   'Aral-Kaffeestudie_AI_Actionfiguren_9x16.mp4',
   'PH_Sterilium_2In1Wipes_Story2_ParisCityTrip_9x16.mp4',
   'PH_Sterilium_HeroVideo_16x9.mp4',
