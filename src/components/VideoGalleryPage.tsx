@@ -8,7 +8,7 @@ import Magnetic from '@/components/ui/Magnetic'
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const isVideo = (src: string) => /\.(mp4|webm|mov)$/i.test(src)
 
-function thumbFor(src: string) {
+export function thumbFor(src: string) {
   const lastSlash = src.lastIndexOf('/')
   const dir  = src.slice(0, lastSlash)
   const name = src.slice(lastSlash + 1).replace(/\.mp4$/i, '')
@@ -272,7 +272,7 @@ export function EndCardTile({ fromRow = 0 }: { fromRow?: 0 | 1 }) {
 }
 
 // ── Lightbox ──────────────────────────────────────────────────────────────────
-function Lightbox({ src, allSrcs, muted, onToggleMute, onClose, onPrev, onNext }: {
+export function Lightbox({ src, allSrcs, muted, onToggleMute, onClose, onPrev, onNext }: {
   src: string; allSrcs: string[]; muted: boolean
   onToggleMute: () => void; onClose: () => void; onPrev: () => void; onNext: () => void
 }) {
