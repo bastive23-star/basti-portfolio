@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
-import { EndCardTile } from '@/components/VideoGalleryPage'
+import { EndCardTile } from '@/components/MediaOverlays'
 
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
