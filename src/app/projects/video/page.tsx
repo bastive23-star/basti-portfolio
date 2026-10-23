@@ -6,9 +6,6 @@ const DIR  = `${BASE}/images/projects/Video`
 const v    = (f: string) => `${DIR}/${f}`
 
 const ROW1 = [
-  'K&B_RotaJET_Compact_Teaser_16x9.mp4',
-  'PaulHartmann_IncoSalesRep_16x9.mp4',
-  'PaulHartmann_IncoSalesRep_Video2_16x9.mp4',
   'BI_KOL_Heimann_Longvideo_16x9_1.mp4',
   'BSH_IFA22_AnetteHöllemann_Solitaire_1x1-2.mp4',
   'Dachser_PI_Start_Oktober_16x9.mp4',
