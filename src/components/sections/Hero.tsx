@@ -226,7 +226,7 @@ export default function Hero() {
   }, [])
 
   useEffect(() => {
-    const mobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0
+    const mobile = window.innerWidth < 1024 || navigator.maxTouchPoints > 0
     setIsMobile(mobile)
     if (sessionStorage.getItem('intro-seen')) {
       setIntroVisible(false)

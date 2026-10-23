@@ -128,7 +128,7 @@ function FloatingCTA({ visible }: { visible: boolean }) {
 
   return (
     <motion.div
-      className="hidden md:flex"
+      className="hidden lg:flex"
       style={{
         position: 'fixed',
         top:       '50%',
@@ -413,7 +413,7 @@ export default function Nav() {
           </motion.span>
         </Link>
 
-        <nav className="hidden md:flex">
+        <nav className="hidden lg:flex">
           <ul
             style={{ display: 'flex', gap: 'clamp(1.2rem, 2.5vw, 2.5rem)', listStyle: 'none', padding: 0, margin: 0 }}
             onMouseLeave={() => setHovered(null)}
@@ -458,12 +458,12 @@ export default function Nav() {
           </ul>
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <CtaMagnetic />
         </div>
 
         <button
-          className="flex md:hidden"
+          className="flex lg:hidden"
           onClick={() => setMenuOpen(v => !v)}
           style={{ background: 'none', border: 'none', padding: '0.4rem', cursor: 'inherit', zIndex: 101, position: 'relative' }}
           aria-label={menuOpen ? 'Menü schließen' : 'Menü öffnen'}

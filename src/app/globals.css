@@ -158,13 +158,13 @@ html.lenis, html.lenis body { height: auto; }
 /* ── Hero section height — CSS handles responsive, avoids JS-hydration layout shift ── */
 .hero-outer { height: 220vh; height: 220dvh; }
 
-/* ── Mobile responsive utilities ── */
-@media (max-width: 767px) {
+/* ── Mobile responsive utilities (< 1024px = phones + tablets in any orientation) ── */
+@media (max-width: 1023px) {
   .hero-outer { height: 100vh; height: 100dvh; }
 
-  .hidden.md\:flex  { display: none !important; }
-  .hidden.md\:block { display: none !important; }
-  .flex.md\:hidden  { display: flex !important; }
+  .hidden.lg\:flex  { display: none !important; }
+  .hidden.lg\:block { display: none !important; }
+  .flex.lg\:hidden  { display: flex !important; }
 
   /* Custom cursor not active on mobile — no override needed */
 
@@ -179,13 +179,13 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-@media (min-width: 768px) {
-  .hidden.md\:flex  { display: flex !important; }
-  .hidden.md\:block { display: block !important; }
-  .flex.md\:hidden  { display: none !important; }
+@media (min-width: 1024px) {
+  .hidden.lg\:flex  { display: flex !important; }
+  .hidden.lg\:block { display: block !important; }
+  .flex.lg\:hidden  { display: none !important; }
 }
 
 /* ── Mobile: reset parallax transforms on video (no scroll-scrub, just plays) ── */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .hero-video { transform: none !important; }
 }
