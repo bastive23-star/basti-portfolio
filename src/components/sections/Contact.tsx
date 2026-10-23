@@ -3,48 +3,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useVelocity, useSpring, animate } from 'framer-motion'
 import { EASE } from '@/lib/motion'
 
-function MagneticBtn({ children, type, onClick }: { children: React.ReactNode; type?: 'submit' | 'button'; onClick?: () => void }) {
-  const wrapRef = useRef<HTMLDivElement>(null)
-
-  const onMove = (e: React.MouseEvent) => {
-    const el = wrapRef.current; if (!el) return
-    const r = el.getBoundingClientRect()
-    const x = (e.clientX - r.left - r.width  / 2) * 0.1
-    const y = (e.clientY - r.top  - r.height / 2) * 0.1
-    el.style.transform = `translate(${x}px, ${y}px)`
-    el.style.transition = 'transform 0.18s ease'
-  }
-  const onLeave = () => {
-    if (!wrapRef.current) return
-    wrapRef.current.style.transform = 'translate(0,0)'
-    wrapRef.current.style.transition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1)'
-  }
-
-  return (
-    <div ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave} style={{ display: 'inline-block' }}>
-      <motion.button
-        type={type ?? 'button'}
-        onClick={onClick}
-        style={{
-          fontFamily: 'var(--ff-mono)', fontWeight: 500, fontSize: '0.68rem',
-          letterSpacing: '0.14em', textTransform: 'uppercase',
-          padding: '0.62rem 1.5rem',
-          border: '1px solid var(--border-mid)',
-          borderRadius: 3,
-          color: 'var(--fg)',
-          background: 'transparent',
-          cursor: 'inherit',
-          display: 'inline-block',
-        }}
-        whileHover={{ background: 'var(--fg)', color: 'var(--bg)', borderColor: 'var(--fg)' }}
-        transition={{ duration: 0.22, ease: EASE }}
-      >
-        {children}
-      </motion.button>
-    </div>
-  )
-}
-
 function AnimatedField({
   id, label, type, placeholder, value, onChange, rows, invalid,
 }: {
@@ -193,6 +151,12 @@ function AnimatedField({
 
 // ─── Slider CAPTCHA ───────────────────────────────────────────────────────────
 const THUMB = 52
+// Stable 0–1 pseudo-random per particle/channel so renders stay pure.
+const jitter = (i: number, ch: number) => {
+  const v = Math.sin(i * 12.9898 + ch * 78.233) * 43758.5453
+  return v - Math.floor(v)
+}
+
 const BURST_COLORS = ['#C8E600', '#ffffff', '#d4f857', '#f0ff70', '#8fdb00', '#e8ffb0']
 
 function SliderVerify({ onComplete, validate, sending, error }: {
@@ -231,12 +195,13 @@ function SliderVerify({ onComplete, validate, sending, error }: {
   const particles = useMemo(() =>
     Array.from({ length: 28 }, (_, i) => ({
       id:     i,
-      angle:  (360 / 28) * i + (Math.random() * 18 - 9),
-      dist:   52 + Math.random() * 72,
+      angle:  (360 / 28) * i + (jitter(i, 1) * 18 - 9),
+      dist:   52 + jitter(i, 2) * 72,
       color:  BURST_COLORS[i % BURST_COLORS.length],
-      size:   4 + Math.random() * 4,
-      circle: Math.random() > 0.45,
-      delay:  Math.random() * 0.1,
+      size:   4 + jitter(i, 3) * 4,
+      circle: jitter(i, 4) > 0.45,
+      delay:  jitter(i, 5) * 0.1,
+      spin:   jitter(i, 6) * 540 - 270,
     }))
   , [])
 
@@ -280,7 +245,7 @@ function SliderVerify({ onComplete, validate, sending, error }: {
                     y: Math.sin(rad) * p.dist,
                     scale: [0, 1.3, 1],
                     opacity: [1, 1, 0],
-                    rotate: Math.random() * 540 - 270,
+                    rotate: p.spin,
                   }}
                   transition={{ duration: 0.7 + p.delay * 2, ease: 'easeOut', delay: p.delay }}
                   style={{
@@ -288,7 +253,7 @@ function SliderVerify({ onComplete, validate, sending, error }: {
                     width: p.size, height: p.size,
                     borderRadius: p.circle ? '50%' : 2,
                     background: p.color,
-                    transform: 'translate(-50%,-50%)',
+                    marginLeft: -p.size / 2, marginTop: -p.size / 2,
                   }}
                 />
               )

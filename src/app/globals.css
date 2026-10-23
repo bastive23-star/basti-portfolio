@@ -111,6 +111,16 @@ h3, h4 { line-height: 1.1; }
 }
 .link-underline:hover::after { width: 100%; }
 
+/* ── Hero CTA ── */
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  font-family: var(--ff-body); font-weight: 600; font-size: 0.82rem;
+  letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+  color: var(--fg); border-bottom: 1px solid var(--border-mid); padding-bottom: 0.4rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+
 /* ── Skip link — visually hidden until focused ── */
 .skip-link {
   position: absolute;

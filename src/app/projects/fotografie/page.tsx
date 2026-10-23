@@ -123,7 +123,7 @@ function Lightbox({ src, onClose, onPrev, onNext }: {
         whileHover={{ x: -3, color: '#fff' }}
         transition={{ duration: 0.25, ease: EASE }}
         style={{
-          position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)',
+          position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', y: '-50%',
           zIndex: 2, background: 'none', border: 'none', padding: '1.2rem',
           color: 'rgba(255,255,255,0.3)', cursor: 'default',
         }}
@@ -143,7 +143,7 @@ function Lightbox({ src, onClose, onPrev, onNext }: {
         whileHover={{ x: 3, color: '#fff' }}
         transition={{ duration: 0.25, ease: EASE }}
         style={{
-          position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)',
+          position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', y: '-50%',
           zIndex: 2, background: 'none', border: 'none', padding: '1.2rem',
           color: 'rgba(255,255,255,0.3)', cursor: 'default',
         }}
@@ -326,6 +326,7 @@ export default function FotografiePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.55, ease: EASE, delay: i * 0.025 }}
                   onClick={() => setActive(src)}
+                  whileHover="hover"
                   data-cursor="View"
                   style={{
                     flexShrink: 0, borderRadius: 5,
@@ -337,7 +338,7 @@ export default function FotografiePage() {
                   <motion.img
                     src={src}
                     alt=""
-                    whileHover={{ scale: 1.04 }}
+                    variants={{ hover: { scale: 1.04 } }}
                     transition={{ duration: 0.5, ease: EASE }}
                     style={{
                       height: '100%', width: 'auto',
@@ -346,7 +347,7 @@ export default function FotografiePage() {
                   />
                   <motion.div
                     initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
+                    variants={{ hover: { opacity: 1 } }}
                     transition={{ duration: 0.25 }}
                     style={{
                       position: 'absolute', inset: 0, pointerEvents: 'none',

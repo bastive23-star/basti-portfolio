@@ -1,8 +1,9 @@
 'use client'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence, useMotionValue } from 'framer-motion'
 import Link from 'next/link'
 import { EASE } from '@/lib/motion'
+import Magnetic from '@/components/ui/Magnetic'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const isVideo = (src: string) => /\.(mp4|webm|mov)$/i.test(src)
@@ -26,8 +27,14 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, ease: EASE, delay }}
       onClick={onClick}
-      onHoverStart={() => { videoRef.current?.play().catch(() => {}); setPlaying(true) }}
-      onHoverEnd={() => { videoRef.current?.pause(); if (videoRef.current) videoRef.current.currentTime = 0; setPlaying(false) }}
+      onHoverStart={() => { videoRef.current?.play().catch(() => {}) }}
+      onHoverEnd={() => {
+        const v = videoRef.current
+        setPlaying(false)
+        if (!v) return
+        v.pause()
+        v.currentTime = 0
+      }}
       data-cursor="Play"
       style={{ flexShrink: 0, borderRadius: 5, overflow: 'hidden', cursor: 'inherit', position: 'relative', height: '100%' }}
     >
@@ -41,6 +48,7 @@ function VideoItem({ src, delay, rowIdx, onClick }: {
         src={src}
         loop muted playsInline
         preload="none"
+        onPlaying={() => setPlaying(true)}
         style={{
           position: 'absolute', inset: 0,
           height: '100%', width: '100%', objectFit: 'cover',
@@ -165,7 +173,7 @@ function CarouselLightbox({ pages, onClose }: { pages: string[]; onClose: () => 
       <motion.button onClick={e => { e.stopPropagation(); setIdx(i => (i - 1 + pages.length) % pages.length) }}
         initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
         whileHover={{ x: -3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
+        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', y: '-50%', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 3L6 10l7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </motion.button>
@@ -173,7 +181,7 @@ function CarouselLightbox({ pages, onClose }: { pages: string[]; onClose: () => 
       <motion.button onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % pages.length) }}
         initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
         whileHover={{ x: 3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
+        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', y: '-50%', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 3l7 7-7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </motion.button>
@@ -213,25 +221,15 @@ function CarouselLightbox({ pages, onClose }: { pages: string[]; onClose: () => 
 
 // ── Magnetic link ─────────────────────────────────────────────────────────────
 export function MagneticLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const ref = useRef<HTMLAnchorElement>(null)
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const sx = useSpring(x, { stiffness: 280, damping: 18 })
-  const sy = useSpring(y, { stiffness: 280, damping: 18 })
-  const onMove = (e: React.MouseEvent) => {
-    const r = ref.current?.getBoundingClientRect()
-    if (!r) return
-    x.set((e.clientX - (r.left + r.width  / 2)) * 0.38)
-    y.set((e.clientY - (r.top  + r.height / 2)) * 0.38)
-  }
   return (
-    <motion.a ref={ref} href={href} target="_blank" rel="noopener noreferrer"
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.08em', textDecoration: 'none', background: 'var(--accent)', color: '#fff', padding: '0.8rem 1.4rem', borderRadius: 6, x: sx, y: sy }}
-      onMouseMove={onMove} onMouseLeave={() => { x.set(0); y.set(0) }}
-      whileHover={{ scale: 1.05 }} transition={{ scale: { duration: 0.2 } }}
-    >
-      {children}
-    </motion.a>
+    <Magnetic strength={0.38}>
+      <motion.a href={href} target="_blank" rel="noopener noreferrer"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontFamily: 'var(--ff-mono)', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.08em', textDecoration: 'none', background: 'var(--accent)', color: '#fff', padding: '0.8rem 1.4rem', borderRadius: 6 }}
+        whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}
+      >
+        {children}
+      </motion.a>
+    </Magnetic>
   )
 }
 
@@ -329,7 +327,7 @@ function Lightbox({ src, allSrcs, muted, onToggleMute, onClose, onPrev, onNext }
       <motion.button onClick={e => { e.stopPropagation(); onPrev() }}
         initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
         whileHover={{ x: -3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
+        style={{ position: 'fixed', left: 'clamp(1rem,3vw,2.5rem)', top: '50%', y: '-50%', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 3L6 10l7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </motion.button>
@@ -337,7 +335,7 @@ function Lightbox({ src, allSrcs, muted, onToggleMute, onClose, onPrev, onNext }
       <motion.button onClick={e => { e.stopPropagation(); onNext() }}
         initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
         whileHover={{ x: 3, color: '#fff' }} transition={{ duration: 0.25, ease: EASE }}
-        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
+        style={{ position: 'fixed', right: 'clamp(1rem,3vw,2.5rem)', top: '50%', y: '-50%', zIndex: 2, background: 'none', border: 'none', padding: '1.2rem', color: 'rgba(255,255,255,0.3)', cursor: 'default' }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 3l7 7-7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </motion.button>
@@ -388,13 +386,15 @@ interface Props {
 
 export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, rowOffset = 'clamp(1.5rem, 2vw, 2.5rem)', endCardRow = 0 }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
-  const [scrollPct, setScrollPct] = useState(0)
+  const scrollPct = useMotionValue(0)
   const [active, setActive]   = useState<string | null>(null)
   const [carousel, setCarousel] = useState<{ pages: string[] } | null>(null)
   const [muted, setMuted]     = useState(true)
 
-  const allItems  = [...row1, ...row2]
-  const allVideos = allItems.filter((item): item is string => typeof item === 'string')
+  const allVideos = useMemo(
+    () => [...row1, ...row2].filter((item): item is string => typeof item === 'string'),
+    [row1, row2],
+  )
   const videoCount = allVideos.filter(isVideo).length
 
   const close      = useCallback(() => setActive(null), [])
@@ -421,13 +421,12 @@ export default function VideoGalleryPage({ titleMain, titleAccent, row1, row2, r
     }
     const onScroll = () => {
       const max = track.scrollWidth - track.clientWidth
-      setScrollPct(max > 0 ? track.scrollLeft / max : 0)
+      scrollPct.set(max > 0 ? track.scrollLeft / max : 0)
     }
     track.addEventListener('wheel', onWheel, { passive: false })
     track.addEventListener('scroll', onScroll, { passive: true })
     return () => { track.removeEventListener('wheel', onWheel); track.removeEventListener('scroll', onScroll) }
-  }, [])
-
+  }, [scrollPct])
 
   return (
     <>

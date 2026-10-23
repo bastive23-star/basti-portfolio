@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 import { EASE } from '@/lib/motion'
+import Magnetic from '@/components/ui/Magnetic'
 
 // ── 5 languages, swipe R→L ────────────────────────────────────────────────────
 const HELLOS = [
@@ -159,29 +160,12 @@ function Intro({ onDone, onContentStart }: { onDone: () => void; onContentStart:
 
 // ── Magnetic button ───────────────────────────────────────────────────────────
 function MagneticLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const ref = useRef<HTMLAnchorElement>(null)
-  const onMove = (e: React.MouseEvent) => {
-    const rect = ref.current!.getBoundingClientRect()
-    const x = (e.clientX - rect.left - rect.width  / 2) * 0.35
-    const y = (e.clientY - rect.top  - rect.height / 2) * 0.35
-    ref.current!.style.transform = `translate(${x}px, ${y}px)`
-  }
-  const onLeave = () => { ref.current!.style.transform = 'translate(0,0)' }
   return (
-    <a
-      ref={ref} href={href} data-cursor="↓"
-      onMouseMove={onMove} onMouseLeave={onLeave}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: '0.75rem',
-        fontFamily: 'var(--ff-body)', fontWeight: 600, fontSize: '0.82rem',
-        letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none',
-        color: 'var(--fg)', borderBottom: '1px solid var(--border-mid)', paddingBottom: '0.4rem',
-        transition: 'color 0.2s, border-color 0.2s, transform 0.4s cubic-bezier(0.16,1,0.3,1)',
-      }}
-      onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)' }}
-    >
-      {children}
-    </a>
+    <Magnetic strength={0.35}>
+      <a href={href} data-cursor="↓" className="hero-cta">
+        {children}
+      </a>
+    </Magnetic>
   )
 }
 

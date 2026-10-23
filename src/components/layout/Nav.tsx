@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 import Link from 'next/link'
 import { EASE, EASE_SNAP } from '@/lib/motion'
+import Magnetic from '@/components/ui/Magnetic'
 
 const links = [
   { label: 'Über mich',  href: '#about',    num: '01' },
@@ -13,24 +14,8 @@ const links = [
 
 // ── Nav CTA (shown while at top) ──────────────────────────────────────────────
 function CtaMagnetic() {
-  const wrapRef = useRef<HTMLDivElement>(null)
-
-  const onMove = (e: React.MouseEvent) => {
-    const el = wrapRef.current; if (!el) return
-    const r = el.getBoundingClientRect()
-    const x = (e.clientX - r.left - r.width  / 2) * 0.22
-    const y = (e.clientY - r.top  - r.height / 2) * 0.22
-    el.style.transform = `translate(${x}px, ${y}px)`
-    el.style.transition = 'transform 0.1s linear'
-  }
-  const onLeave = () => {
-    if (!wrapRef.current) return
-    wrapRef.current.style.transform = 'translate(0,0)'
-    wrapRef.current.style.transition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1)'
-  }
-
   return (
-    <div ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave} style={{ display: 'inline-block' }}>
+    <Magnetic strength={0.22}>
       <motion.a
         href="#contact"
         data-cursor="→"
@@ -49,14 +34,13 @@ function CtaMagnetic() {
       >
         Get in touch
       </motion.a>
-    </div>
+    </Magnetic>
   )
 }
 
 // ── Floating CTA — blob dot, right-center of screen ──────────────────────────
 function FloatingCTA({ visible }: { visible: boolean }) {
   const [hovered, setHovered] = useState(false)
-  const wrapRef   = useRef<HTMLDivElement>(null)
   const shapeCtrl = useAnimation()
 
   // Idle blob frames — subtle organic wabble
@@ -77,21 +61,6 @@ function FloatingCTA({ visible }: { visible: boolean }) {
     '44% 56% 60% 40% / 56% 44% 40% 60%',
     '50% 50% 50% 50% / 50% 50% 50% 50%',
   ]
-
-  const onMove = (e: React.MouseEvent) => {
-    const el = wrapRef.current; if (!el) return
-    const r = el.getBoundingClientRect()
-    const x = (e.clientX - r.left - r.width  / 2) * 0.38
-    const y = (e.clientY - r.top  - r.height / 2) * 0.38
-    el.style.transform = `translate(${x}px, ${y}px)`
-    el.style.transition = 'transform 0.1s linear'
-  }
-  const onLeave = () => {
-    if (!wrapRef.current) return
-    wrapRef.current.style.transform = 'translate(0,0)'
-    wrapRef.current.style.transition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1)'
-    setHovered(false)
-  }
 
   useEffect(() => {
     if (hovered) {
@@ -166,7 +135,7 @@ function FloatingCTA({ visible }: { visible: boolean }) {
           }
         />
 
-        <div ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave}>
+        <Magnetic strength={0.38} style={{ display: 'block' }}>
           <motion.a
             href="https://www.linkedin.com/in/sebastian-vitzthum-101154180/"
             target="_blank"
@@ -175,6 +144,7 @@ function FloatingCTA({ visible }: { visible: boolean }) {
             initial={{ width: 50, height: 50, borderRadius: '50%', boxShadow: '0 0 0 0 rgba(52,201,168,0)' }}
             animate={shapeCtrl}
             onHoverStart={() => setHovered(true)}
+            onHoverEnd={() => setHovered(false)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               overflow: 'hidden',
@@ -199,7 +169,7 @@ function FloatingCTA({ visible }: { visible: boolean }) {
               Slide in<br />my DMs
             </motion.span>
           </motion.a>
-        </div>
+        </Magnetic>
       </motion.div>
     </motion.div>
   )

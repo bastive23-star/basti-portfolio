@@ -31,7 +31,7 @@ export default function Datenschutz() {
         </section>
         <section>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>5. Schriftarten</h2>
-          <p>Diese Website verwendet die Schriftart „DM Sans" und „DM Mono". Die Schriftdateien werden lokal auf dem Server dieser Website gehostet und beim Seitenaufruf direkt von dort geladen. Es findet dabei keine Verbindung zu externen Servern statt. Es werden dabei keine personenbezogenen Daten an Dritte übertragen.</p>
+          <p>Diese Website verwendet die Schriftart „DM Sans“ und „DM Mono“. Die Schriftdateien werden lokal auf dem Server dieser Website gehostet und beim Seitenaufruf direkt von dort geladen. Es findet dabei keine Verbindung zu externen Servern statt. Es werden dabei keine personenbezogenen Daten an Dritte übertragen.</p>
         </section>
         <section>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.5rem', fontFamily: 'var(--ff-body)' }}>6. Deine Rechte</h2>
