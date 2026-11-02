@@ -6,13 +6,19 @@ const DIR  = `${BASE}/images/projects/AI_Production`
 const v    = (f: string) => `${DIR}/${f}`
 
 const FEATURED = {
-  src: v('PH_Sterilium_HeroVideo_16x9.mp4'),
-  client: 'Paul Hartmann',
-  title: 'Sterillium',
-  accent: 'To\u00A0Go',
+  src: v('AI-Workflow-Film_16x9.mp4'),
+  client: 'Eigenes Projekt',
+  title: 'AI',
+  accent: 'Workflow',
 }
 
 const ROWS: LibraryRow[] = [
+  {
+    title: 'AI Workflow',
+    items: [
+      'AI-Workflow-Film_16x9.mp4',
+    ].map(v),
+  },
   {
     title: 'Paul Hartmann',
     items: [
